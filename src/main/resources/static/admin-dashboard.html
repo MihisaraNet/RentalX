@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | RentalX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: hsl(220, 85%, 57%);
+            --primary-hover: hsl(220, 85%, 47%);
+            --accent: hsl(15, 85%, 53%);
+            --sidebar-bg: hsl(222, 47%, 11%);
+            --bg-gradient: linear-gradient(135deg, hsl(210, 30%, 96%) 0%, hsl(220, 20%, 92%) 100%);
+            --card-bg: white;
+            --text-main: hsl(222, 47%, 15%);
+            --text-muted: hsl(215, 16%, 47%);
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.06);
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            padding: 2.5rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            box-shadow: 4px 0 25px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 2.5rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 1.5rem;
+        }
+
+        .sidebar-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            flex-grow: 1;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 0.9rem 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+
+        .sidebar-link:hover, .sidebar-link.active {
+            background: var(--primary);
+            color: white;
+            transform: translateX(4px);
+        }
+
+        .logout-btn {
+            padding: 0.9rem;
+            background: hsl(0, 75%, 50%);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+            margin-top: auto;
+        }
+
+        .logout-btn:hover {
+            background: hsl(0, 75%, 43%);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content Styling */
+        .main-content {
+            flex-grow: 1;
+            padding: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            padding-bottom: 1rem;
+        }
+
+        .page-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.4rem;
+            color: var(--sidebar-bg);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        /* Status Cards */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            width: 100%;
+        }
+
+        .metric-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            transition: var(--transition);
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .metric-card h3 {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .metric-card p {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--sidebar-bg);
+        }
+
+        /* Register Form Section */
+        .register-section {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
+            padding: 2.5rem;
+            max-width: 600px;
+            width: 100%;
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+
+        .register-section h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            color: var(--sidebar-bg);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: hsl(222, 20%, 30%);
+        }
+
+        input {
+            padding: 12px 16px;
+            font-size: 1rem;
+            border: 1px solid hsl(215, 20%, 85%);
+            border-radius: var(--radius);
+            background: rgba(249, 250, 251, 0.8);
+            transition: var(--transition);
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+            outline: none;
+            background: white;
+        }
+
+        button[type="submit"] {
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary) 0%, hsl(220, 80%, 50%) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+            margin-top: 10px;
+        }
+
+        button[type="submit"]:hover {
+            background: linear-gradient(135deg, var(--primary-hover) 0%, hsl(220, 80%, 42%) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+        }
+
+        /* Responsiveness */
+        @media (max-width: 900px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                padding: 1.5rem;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            }
+
+            .sidebar-header {
+                margin-bottom: 1.5rem;
+                padding-bottom: 1rem;
+            }
+
+            .sidebar-links {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.5rem;
+            }
+
+            .sidebar-link {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .logout-btn {
+                margin-top: 1rem;
+                width: 100%;
+            }
+
+            .main-content {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<script>
+    // Security redirect guard
+    const adminId = sessionStorage.getItem('adminId');
+    if (!adminId) {
+        alert("Unauthorized access. Redirecting to login...");
+        window.location.href = "admin-login.html";
+    }
+</script>
+
+<div class="sidebar">
+    <div class="sidebar-header">RentalX Control</div>
+    <div class="sidebar-links">
+        <a href="admin-dashboard.html" class="sidebar-link active">Dashboard Overview</a>
+        <a href="vehicle.html" class="sidebar-link">Manage Vehicles</a>
+        <a href="driver.html" class="sidebar-link">Manage Drivers</a>
+        <a href="admin-booking.html" class="sidebar-link">All Bookings</a>
+        <a href="review-admin.html" class="sidebar-link">Customer Reviews</a>
+        <a href="all-vehicles.html" class="sidebar-link">Catalog Browser</a>
+        <a href="admin-manage.html" class="sidebar-link">Admin Team</a>
+    </div>
+    <button onclick="logout()" class="logout-btn">Log Out</button>
+</div>
+
+<div class="main-content">
+    <div class="page-header">
+        <h1>Administrative Dashboard</h1>
+        <p>Operational summary, metrics, and administration control center.</p>
+    </div>
+
+    <!-- Statistical Metric Cards -->
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <h3>Active Catalog</h3>
+            <p id="totalVehiclesCount">...</p>
+        </div>
+        <div class="metric-card">
+            <h3>Registered Drivers</h3>
+            <p id="totalDriversCount">...</p>
+        </div>
+        <div class="metric-card">
+            <h3>Pending Bookings</h3>
+            <p id="pendingBookingsCount">...</p>
+        </div>
+    </div>
+
+    <div class="register-section">
+        <h2>Register New Admin</h2>
+        <form id="adminRegisterForm">
+            <div class="form-group">
+                <label for="regAdminId">Admin ID</label>
+                <input type="text" id="regAdminId" placeholder="Enter alphanumeric Admin ID" required>
+            </div>
+            <div class="form-group">
+                <label for="adminName">Full Name</label>
+                <input type="text" id="adminName" placeholder="Enter full name" required>
+            </div>
+            <div class="form-group">
+                <label for="adminEmail">Email Address</label>
+                <input type="email" id="adminEmail" placeholder="admin@rentalx.com" required>
+            </div>
+            <div class="form-group">
+                <label for="adminPassword">Password (Min. 6 chars)</label>
+                <input type="password" id="adminPassword" placeholder="••••••••" required>
+            </div>
+            <button type="submit">Create Account</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function logout() {
+        sessionStorage.removeItem('adminId');
+        window.location.href = 'index.html';
+    }
+
+    // Fetch dashboard quick statistics
+    function loadStatistics() {
+        // Fetch Vehicles
+        fetch('/vehicles/all')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('totalVehiclesCount').innerText = data.length;
+            })
+            .catch(() => document.getElementById('totalVehiclesCount').innerText = "0");
+
+        // Fetch Drivers
+        fetch('/driver/all')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('totalDriversCount').innerText = data.length;
+            })
+            .catch(() => document.getElementById('totalDriversCount').innerText = "0");
+
+        // Fetch Bookings
+        fetch('/bookings/all')
+            .then(res => res.json())
+            .then(data => {
+                const pending = data.filter(b => b.status.toLowerCase() === 'pending').length;
+                document.getElementById('pendingBookingsCount').innerText = pending;
+            })
+            .catch(() => document.getElementById('pendingBookingsCount').innerText = "0");
+    }
+
+    document.getElementById('adminRegisterForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const admin = {
+            adminId: document.getElementById('regAdminId').value.trim(),
+            name: document.getElementById('adminName').value.trim(),
+            email: document.getElementById('adminEmail').value.trim(),
+            password: document.getElementById('adminPassword').value
+        };
+
+        fetch('/admin/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(admin)
+        })
+            .then(res => {
+                if (!res.ok) {
+                    return res.text().then(msg => { throw new Error(msg); });
+                }
+                return res.text();
+            })
+            .then(() => {
+                alert("New admin successfully registered!");
+                document.getElementById('adminRegisterForm').reset();
+            })
+            .catch(error => {
+                console.error('Registration failed:', error);
+                alert(error.message || 'Failed to register admin.');
+            });
+    });
+
+    window.onload = loadStatistics;
+</script>
+</body>
+</html>
