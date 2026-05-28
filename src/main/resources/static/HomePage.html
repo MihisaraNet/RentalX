@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Vehicles | RentalX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: hsl(220, 85%, 57%);
+            --primary-hover: hsl(220, 85%, 47%);
+            --accent: hsl(160, 80%, 40%);
+            --accent-hover: hsl(160, 80%, 33%);
+            --bg-gradient: linear-gradient(180deg, hsl(210, 30%, 96%) 0%, hsl(220, 20%, 92%) 100%);
+            --card-bg: white;
+            --text-main: hsl(222, 47%, 15%);
+            --text-muted: hsl(215, 16%, 47%);
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 45px rgba(0, 0, 0, 0.12);
+            --radius: 14px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            background: linear-gradient(135deg, hsl(220, 80%, 35%) 0%, hsl(220, 85%, 57%) 100%);
+            padding: 1.2rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-brand {
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            text-decoration: none;
+            letter-spacing: -0.03em;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: var(--transition);
+            position: relative;
+            padding: 4px 0;
+        }
+
+        .nav-link:hover {
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background: white;
+            transition: var(--transition);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .logout-btn {
+            padding: 0.6rem 1.6rem;
+            background: hsl(0, 75%, 50%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2);
+        }
+
+        .logout-btn:hover {
+            background: hsl(0, 75%, 43%);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 3rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .main-content h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: hsl(222, 47%, 11%);
+            margin-bottom: 2rem;
+            letter-spacing: -0.02em;
+            text-align: center;
+        }
+
+        /* Control Bar */
+        .button-container {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+            width: 100%;
+        }
+
+        .sort-btn, .view-rented-btn {
+            padding: 10px 22px;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .sort-btn {
+            background: linear-gradient(135deg, var(--accent) 0%, hsl(160, 80%, 35%) 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+
+        .sort-btn:hover {
+            background: linear-gradient(135deg, var(--accent-hover) 0%, hsl(160, 80%, 30%) 100%);
+            transform: translateY(-2px);
+        }
+
+        .view-rented-btn {
+            background: linear-gradient(135deg, hsl(215, 16%, 47%) 0%, hsl(215, 20%, 35%) 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(107, 114, 128, 0.2);
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .view-rented-btn:hover {
+            background: linear-gradient(135deg, hsl(215, 16%, 40%) 0%, hsl(215, 20%, 30%) 100%);
+            transform: translateY(-2px);
+        }
+
+        /* Catalog Grid */
+        .vehicle-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            width: 100%;
+        }
+
+        .vehicle-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+            padding: 1.5rem;
+            transition: var(--transition);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .vehicle-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .vehicle-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .vehicle-card:hover img {
+            transform: scale(1.02);
+        }
+
+        .vehicle-info {
+            font-size: 0.95rem;
+            color: hsl(222, 20%, 30%);
+            line-height: 1.6;
+            margin-bottom: 1.2rem;
+            flex-grow: 1;
+        }
+
+        .vehicle-info strong {
+            color: hsl(222, 47%, 11%);
+            font-weight: 600;
+        }
+
+        .status {
+            padding: 0.4rem 0.8rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            background: hsl(140, 75%, 92%);
+            color: hsl(140, 75%, 25%);
+            margin-top: 5px;
+        }
+
+        .rent-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--primary) 0%, hsl(220, 80%, 50%) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+        }
+
+        .rent-btn:hover {
+            background: linear-gradient(135deg, var(--primary-hover) 0%, hsl(220, 80%, 42%) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.2);
+        }
+
+        .no-vehicles {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+            font-style: italic;
+            font-size: 1.1rem;
+            grid-column: 1 / -1;
+        }
+
+        /* 📅 Booking Modal Overlays */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            max-width: 500px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transform: translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+            padding-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            color: hsl(222, 47%, 11%);
+            font-weight: 700;
+        }
+
+        .close-modal-btn {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0;
+            margin: 0;
+            line-height: 1;
+            box-shadow: none;
+            width: auto;
+        }
+
+        .close-modal-btn:hover {
+            color: hsl(0, 75%, 50%);
+            transform: none;
+            box-shadow: none;
+        }
+
+        .modal-body {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .modal-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .modal-form-group label {
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: hsl(222, 20%, 30%);
+        }
+
+        .modal-form-control {
+            width: 100%;
+            padding: 11px 14px;
+            font-size: 0.95rem;
+            border: 1px solid hsl(215, 20%, 85%);
+            border-radius: 8px;
+            background: rgba(249, 250, 251, 0.8);
+            transition: var(--transition);
+        }
+
+        .modal-form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+            outline: none;
+            background: white;
+        }
+
+        /* Pricing Panel */
+        .price-panel {
+            background: hsl(210, 30%, 97%);
+            padding: 1.2rem;
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.02);
+            margin-top: 10px;
+        }
+
+        .price-panel div {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.95rem;
+            color: hsl(222, 20%, 30%);
+            margin-bottom: 6px;
+        }
+
+        .price-panel div:last-child {
+            margin-bottom: 0;
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+            padding-top: 8px;
+            font-weight: 700;
+            color: hsl(222, 47%, 11%);
+            font-size: 1.1rem;
+        }
+
+        .btn-confirm-booking {
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(135deg, var(--primary) 0%, hsl(220, 80%, 50%) 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+            margin-top: 15px;
+        }
+
+        .btn-confirm-booking:hover {
+            background: linear-gradient(135deg, var(--primary-hover) 0%, hsl(220, 80%, 42%) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 1.2rem;
+                padding: 1rem;
+            }
+
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+                gap: 1.2rem;
+                flex-wrap: wrap;
+            }
+
+            .main-content {
+                padding: 2rem 1rem;
+            }
+
+            .button-container {
+                flex-direction: column;
+            }
+
+            .sort-btn, .view-rented-btn {
+                width: 100%;
+            }
+
+            .modal-card {
+                padding: 1.5rem;
+                margin: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+<script>
+    // Security redirect guard
+    const userId = sessionStorage.getItem('loggedInUserId');
+    if (!userId) {
+        alert("Please log in to browse vehicles.");
+        window.location.href = "user-login.html";
+    }
+</script>
+
+<nav>
+    <a href="HomePage.html" class="nav-brand">RentalX</a>
+    <div class="nav-links">
+        <a href="user-profile.html" class="nav-link">Profile</a>
+        <a href="user-bookings.html" class="nav-link">Bookings</a>
+        <a href="user-reviews.html" class="nav-link">Reviews</a>
+        <button onclick="logout()" class="logout-btn">Log Out</button>
+    </div>
+</nav>
+
+<div class="main-content">
+    <h1>All Available Vehicles</h1>
+
+    <div class="button-container">
+        <button onclick="toggleSort()" class="sort-btn" id="sortBtn">Sort by Price: High to Low</button>
+        <a href="user-bookings.html" class="view-rented-btn">View My Bookings</a>
+    </div>
+
+    <div class="vehicle-grid" id="vehicleGrid"></div>
+</div>
+
+<!-- 📅 Booking Calendar Modal -->
+<div class="modal-overlay" id="bookingModalOverlay">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h2 id="modalVehicleName">Book Vehicle</h2>
+            <button class="close-modal-btn" onclick="closeBookingModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-form-group">
+                <label for="startDate">Rental Start Date</label>
+                <input type="date" id="startDate" class="modal-form-control" onchange="calculateRentalCost()" required>
+            </div>
+            <div class="modal-form-group">
+                <label for="endDate">Rental Return Date</label>
+                <input type="date" id="endDate" class="modal-form-control" onchange="calculateRentalCost()" required>
+            </div>
+            
+            <!-- Pricing Summary Card -->
+            <div class="price-panel">
+                <div>
+                    <span>Daily rate:</span>
+                    <span id="summaryDailyRate">Rs. 0.00</span>
+                </div>
+                <div>
+                    <span>Duration:</span>
+                    <span id="summaryDuration">0 Days</span>
+                </div>
+                <div>
+                    <span>Total cost:</span>
+                    <span id="summaryTotalCost">Rs. 0.00</span>
+                </div>
+            </div>
+
+            <button class="btn-confirm-booking" id="confirmBookingBtn">Confirm Rental Booking</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const VEHICLE_API = '/vehicles';
+    const BOOKING_API = '/bookings';
+    let sortByPrice = false;
+    let vehicleData = [];
+    
+    // State of the currently selected vehicle for booking
+    let selectedVehicle = null;
+
+    function logout() {
+        sessionStorage.removeItem('loggedInUserId');
+        window.location.href = 'index.html';
+    }
+
+    function toggleSort() {
+        sortByPrice = !sortByPrice;
+        document.getElementById('sortBtn').innerText = sortByPrice ? "Sort by Price: Low to High" : "Sort by Price: High to Low";
+        renderVehicles();
+    }
+
+    function fetchVehicles() {
+        fetch(`${VEHICLE_API}/all`)
+            .then(res => {
+                if (!res.ok) throw new Error('Failed to fetch vehicles');
+                return res.json();
+            })
+            .then(data => {
+                vehicleData = data.map(vehicle => ({
+                    ...vehicle,
+                    rentPrice: parseFloat(vehicle.rentPrice) || 0
+                }));
+                renderVehicles();
+            })
+            .catch(err => {
+                console.error('Error fetching vehicles:', err);
+                document.getElementById('vehicleGrid').innerHTML = '<p class="no-vehicles">Error loading vehicles. Please try again.</p>';
+            });
+    }
+
+    function renderVehicles() {
+        const grid = document.getElementById('vehicleGrid');
+        grid.innerHTML = '';
+
+        const availableVehicles = vehicleData.filter(v => v.available);
+
+        if (availableVehicles.length === 0) {
+            grid.innerHTML = '<p class="no-vehicles">No vehicles available at the moment. Please check back later!</p>';
+            return;
+        }
+
+        const sortedVehicles = [...availableVehicles].sort((a, b) => {
+            return sortByPrice ? a.rentPrice - b.rentPrice : b.rentPrice - a.rentPrice;
+        });
+
+        sortedVehicles.forEach(v => {
+            const card = document.createElement('div');
+            card.className = 'vehicle-card';
+            card.innerHTML = `
+                <img src="${v.imagePath || 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=400&q=80'}" alt="${v.model}">
+                <div class="vehicle-info">
+                    <strong>Model:</strong> ${v.model}<br>
+                    <strong>Type:</strong> ${v.type}<br>
+                    <strong>Price:</strong> Rs.${v.rentPrice.toFixed(2)} / Day<br>
+                    <span class="status">Available</span>
+                </div>
+                <button class="rent-btn" onclick="openBookingModal('${v.vehicleId}')">Rent Now</button>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    // Modal Control Logic
+    function openBookingModal(vehicleId) {
+        selectedVehicle = vehicleData.find(v => v.vehicleId === vehicleId);
+        if (!selectedVehicle) return;
+
+        // Populate Modal Details
+        document.getElementById('modalVehicleName').innerText = `Rent ${selectedVehicle.model}`;
+        document.getElementById('summaryDailyRate').innerText = `Rs.${selectedVehicle.rentPrice.toFixed(2)}`;
+        
+        // Reset Inputs
+        const startDateInput = document.getElementById('startDate');
+        const endDateInput = document.getElementById('endDate');
+        startDateInput.value = '';
+        endDateInput.value = '';
+
+        // Enforce Min Dates (today)
+        const todayStr = new Date().toISOString().split('T')[0];
+        startDateInput.min = todayStr;
+        endDateInput.min = todayStr;
+
+        // Reset summaries
+        document.getElementById('summaryDuration').innerText = "0 Days";
+        document.getElementById('summaryTotalCost').innerText = "Rs. 0.00";
+
+        // Bind Confirm Event
+        document.getElementById('confirmBookingBtn').onclick = submitRentalBooking;
+
+        // Open Modal Overlay
+        document.getElementById('bookingModalOverlay').classList.add('active');
+    }
+
+    function closeBookingModal() {
+        document.getElementById('bookingModalOverlay').classList.remove('active');
+        selectedVehicle = null;
+    }
+
+    function calculateRentalCost() {
+        if (!selectedVehicle) return;
+
+        const startStr = document.getElementById('startDate').value;
+        const endStr = document.getElementById('endDate').value;
+
+        if (!startStr || !endStr) return;
+
+        const start = new Date(startStr);
+        const end = new Date(endStr);
+
+        // Basic sanity check
+        if (end < start) {
+            document.getElementById('endDate').value = startStr;
+            calculateRentalCost();
+            return;
+        }
+
+        // Calculate days inclusive of start and end day
+        const diffTime = Math.abs(end - start);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+        const totalCost = diffDays * selectedVehicle.rentPrice;
+
+        document.getElementById('summaryDuration').innerText = `${diffDays} Day${diffDays > 1 ? 's' : ''}`;
+        document.getElementById('summaryTotalCost').innerText = `Rs.${totalCost.toFixed(2)}`;
+    }
+
+    // Secure overlap calendar booking submission
+    function submitRentalBooking() {
+        if (!userId) {
+            alert("Please log in to continue.");
+            window.location.href = "user-login.html";
+            return;
+        }
+
+        const startStr = document.getElementById('startDate').value;
+        const endStr = document.getElementById('endDate').value;
+
+        if (!startStr || !endStr) {
+            alert("Please select both start and return dates.");
+            return;
+        }
+
+        const start = new Date(startStr);
+        const end = new Date(endStr);
+        if (end < start) {
+            alert("Return date must be equal to or after the rental start date.");
+            return;
+        }
+
+        // Generate dynamic booking parameters
+        const bookingId = "B-" + Math.floor(100000 + Math.random() * 900000);
+        
+        const bookingPayload = {
+            bookingId: bookingId,
+            userId: userId,
+            vehicleId: selectedVehicle.vehicleId,
+            driverId: selectedVehicle.driverId || "None",
+            bookingDate: startStr,
+            returnDate: endStr,
+            status: "Approved" // Set to Approved so it triggers date overlaps
+        };
+
+        // Step 1: Attempt to register the booking on the backend (performs date overlap checks)
+        fetch(`${BOOKING_API}/add`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bookingPayload)
+        })
+        .then(res => {
+            if (!res.ok) {
+                return res.text().then(msg => { throw new Error(msg); });
+            }
+            return res.text();
+        })
+        .then(() => {
+            // Step 2: Since booking is successful (no overlaps!), rent the vehicle dynamically
+            return fetch(`${VEHICLE_API}/rent/${selectedVehicle.vehicleId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("Booking succeeded, but catalog sync failed.");
+            return res.text();
+        })
+        .then(() => {
+            alert(`Congratulations! Vehicle ${selectedVehicle.model} booked successfully!\nBooking Reference: ${bookingId}`);
+            closeBookingModal();
+            fetchVehicles();
+        })
+        .catch(err => {
+            console.error('Rental booking failed:', err);
+            alert(err.message || "Failed to book vehicle. Please try again.");
+        });
+    }
+
+    window.onload = fetchVehicles;
+</script>
+</body>
+</html>
