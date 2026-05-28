@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            color: #333;
+            padding: 2rem;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #0077b6;
+        }
+
+        section {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        h2 {
+            color: #0077b6;
+            margin-bottom: 1rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        form input[type="text"],
+        form input[type="number"],
+        form input[type="file"] {
+            padding: 0.9rem 1rem;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            transition: 0.3s;
+        }
+
+        form input:focus {
+            border-color: #0077b6;
+            box-shadow: 0 0 0 3px rgba(0, 119, 182, 0.15);
+            outline: none;
+        }
+
+        form label {
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        form button {
+            padding: 0.9rem;
+            font-size: 1rem;
+            background: #0077b6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        form button:hover {
+            background: #005f8d;
+            transform: translateY(-2px);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #0077b6;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #eef6fb;
+        }
+
+        img {
+            width: 100px;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        button.sort-btn {
+            margin: 0.5rem 0.5rem 1rem 0;
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            background-color: #00b4d8;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button.sort-btn:hover {
+            background-color: #0096c7;
+            transform: translateY(-2px);
+        }
+
+        .action-btn {
+            padding: 0.4rem 0.8rem;
+            margin: 0.2rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.3s ease-in-out;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333;
+        }
+
+        .btn-toggle {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        .btn-toggle:hover {
+            background-color: #117a8b;
+        }
+
+        .btn-rent {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-rent:hover {
+            background-color: #218838;
+        }
+
+        td button {
+            min-width: 100px;
+        }
+
+
+        @media (max-width: 768px) {
+            section {
+                padding: 1.5rem;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<h1>Vehicle Management</h1>
+
+<!-- Add Vehicle Form -->
+<section>
+    <h2>Add Vehicle</h2>
+    <form id="addVehicleForm" enctype="multipart/form-data">
+        <input type="text" name="vehicleId" placeholder="Vehicle ID" required>
+        <input type="text" name="model" placeholder="Model" required>
+        <input type="text" name="type" placeholder="Type" required>
+        <input type="number" name="rentPrice" placeholder="Rent Price" required>
+        <label>
+            Available:
+            <input type="checkbox" name="available" checked>
+        </label>
+        <input type="file" name="image" accept="image/*" required>
+        <input type="hidden" name="driverId" value="A001">
+        <button type="submit">Add Vehicle</button>
+    </form>
+</section>
+
+<!-- Vehicle Table -->
+<section>
+    <h2>All Vehicles</h2>
+    <button class="sort-btn" onclick="fetchVehicles(false)">Refresh (Unsorted)</button>
+    <button class="sort-btn" onclick="fetchVehicles(true)">Sort by Rent Price</button>
+    <table id="vehicleTable">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Model</th>
+            <th>Type</th>
+            <th>Available</th>
+            <th>Rent Price</th>
+            <th>Image</th>
+            <th>Driver ID</th>
+            <th>Available</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody id="vehicleTableBody"></tbody>
+    </table>
+</section>
+
+<script src="scripts/vehicle.js"></script>
+
+</body>
+</html>

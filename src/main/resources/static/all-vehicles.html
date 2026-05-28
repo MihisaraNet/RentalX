@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Vehicles | RentalX Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: hsl(220, 85%, 57%);
+            --primary-hover: hsl(220, 85%, 47%);
+            --sidebar-bg: hsl(222, 47%, 11%);
+            --bg-gradient: linear-gradient(135deg, hsl(210, 30%, 96%) 0%, hsl(220, 20%, 92%) 100%);
+            --card-bg: white;
+            --text-main: hsl(222, 47%, 15%);
+            --text-muted: hsl(215, 16%, 47%);
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.06);
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            padding: 2.5rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            box-shadow: 4px 0 25px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 2.5rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 1.5rem;
+        }
+
+        .sidebar-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            flex-grow: 1;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 0.9rem 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+
+        .sidebar-link:hover, .sidebar-link.active {
+            background: var(--primary);
+            color: white;
+            transform: translateX(4px);
+        }
+
+        .logout-btn {
+            padding: 0.9rem;
+            background: hsl(0, 75%, 50%);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+            margin-top: auto;
+        }
+
+        .logout-btn:hover {
+            background: hsl(0, 75%, 43%);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content Styling */
+        .main-content {
+            flex-grow: 1;
+            padding: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .page-header {
+            margin-bottom: 2.5rem;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            padding-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.4rem;
+            color: var(--sidebar-bg);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .sort-btn {
+            padding: 10px 22px;
+            background: hsl(160, 80%, 38%);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+
+        .sort-btn:hover {
+            background: hsl(160, 80%, 32%);
+            transform: translateY(-2px);
+        }
+
+        /* Grid */
+        .vehicle-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            width: 100%;
+        }
+
+        .vehicle-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+            padding: 1.5rem;
+            transition: var(--transition);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .vehicle-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .vehicle-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .vehicle-card:hover img {
+            transform: scale(1.02);
+        }
+
+        .vehicle-info {
+            font-size: 0.95rem;
+            color: hsl(222, 20%, 30%);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+
+        .vehicle-info strong {
+            color: var(--sidebar-bg);
+            font-weight: 600;
+        }
+
+        .status {
+            padding: 0.4rem 0.8rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .status-available {
+            background: hsl(140, 75%, 92%);
+            color: hsl(140, 75%, 25%);
+        }
+
+        .status-unavailable {
+            background: hsl(0, 75%, 94%);
+            color: hsl(0, 75%, 35%);
+        }
+
+        .no-vehicles {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+            font-style: italic;
+            font-size: 1.1rem;
+            grid-column: 1 / -1;
+        }
+
+        /* Responsiveness */
+        @media (max-width: 900px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                padding: 1.5rem;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            }
+
+            .sidebar-header {
+                margin-bottom: 1.5rem;
+                padding-bottom: 1rem;
+            }
+
+            .sidebar-links {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.5rem;
+            }
+
+            .sidebar-link {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .logout-btn {
+                margin-top: 1rem;
+                width: 100%;
+            }
+
+            .main-content {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<script>
+    // Security redirect guard
+    const adminId = sessionStorage.getItem('adminId');
+    if (!adminId) {
+        alert("Unauthorized access. Redirecting to login...");
+        window.location.href = "admin-login.html";
+    }
+</script>
+
+<div class="sidebar">
+    <div class="sidebar-header">RentalX Control</div>
+    <div class="sidebar-links">
+        <a href="admin-dashboard.html" class="sidebar-link">Dashboard Overview</a>
+        <a href="vehicle.html" class="sidebar-link">Manage Vehicles</a>
+        <a href="driver.html" class="sidebar-link">Manage Drivers</a>
+        <a href="admin-booking.html" class="sidebar-link">All Bookings</a>
+        <a href="review-admin.html" class="sidebar-link">Customer Reviews</a>
+        <a href="all-vehicles.html" class="sidebar-link active">Catalog Browser</a>
+        <a href="admin-manage.html" class="sidebar-link">Admin Team</a>
+    </div>
+    <button onclick="logout()" class="logout-btn">Log Out</button>
+</div>
+
+<div class="main-content">
+    <div class="page-header">
+        <h1>Catalog Browser</h1>
+        <button onclick="toggleSort()" class="sort-btn" id="sortBtn">Sort by Price: High to Low</button>
+    </div>
+    
+    <div class="vehicle-grid" id="vehicleGrid"></div>
+</div>
+
+<script>
+    let sortByPrice = false;
+    let vehicleData = [];
+
+    function logout() {
+        sessionStorage.removeItem('adminId');
+        window.location.href = 'index.html';
+    }
+
+    function toggleSort() {
+        sortByPrice = !sortByPrice;
+        document.getElementById('sortBtn').innerText = sortByPrice ? "Sort by Price: Low to High" : "Sort by Price: High to Low";
+        renderVehicles();
+    }
+
+    function fetchAllVehicles() {
+        fetch('/vehicles/all')
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to fetch vehicles');
+                return response.json();
+            })
+            .then(data => {
+                vehicleData = data;
+                renderVehicles();
+            })
+            .catch(err => {
+                console.error('Error fetching vehicles:', err);
+                document.getElementById('vehicleGrid').innerHTML = '<p class="no-vehicles">Error loading vehicles. Please try again.</p>';
+            });
+    }
+
+    function renderVehicles() {
+        const grid = document.getElementById('vehicleGrid');
+        grid.innerHTML = '';
+
+        if (vehicleData.length === 0) {
+            grid.innerHTML = '<p class="no-vehicles">No vehicles registered in catalog.</p>';
+            return;
+        }
+
+        const sortedData = [...vehicleData].sort((a, b) => {
+            return sortByPrice ? a.rentPrice - b.rentPrice : b.rentPrice - a.rentPrice;
+        });
+
+        sortedData.forEach(vehicle => {
+            const card = document.createElement('div');
+            card.className = 'vehicle-card';
+            card.innerHTML = `
+                <img src="${vehicle.imagePath || 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=400&q=80'}" alt="${vehicle.model}">
+                <div class="vehicle-info">
+                    <strong>Model:</strong> ${vehicle.model}<br>
+                    <strong>Type:</strong> ${vehicle.type}<br>
+                    <strong>Price:</strong> Rs.${parseFloat(vehicle.rentPrice).toFixed(2)} / Day<br>
+                    <div style="margin-top: 10px;">
+                        <span class="status ${vehicle.available ? 'status-available' : 'status-unavailable'}">${vehicle.available ? 'Available' : 'Rented'}</span>
+                    </div>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    window.onload = fetchAllVehicles;
+</script>
+</body>
+</html>

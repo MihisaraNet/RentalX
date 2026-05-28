@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Booking Management</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            padding: 30px;
+        }
+
+        h1 {
+            color: #003366;
+            text-align: center;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        th {
+            background-color: #005f99;
+            color: white;
+        }
+
+        button {
+            padding: 6px 12px;
+            background-color: #d11a2a;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 2px;
+        }
+
+        button:hover {
+            background-color: #a80f1a;
+        }
+
+        .approve-btn {
+            background-color: #28a745;
+        }
+
+        .approve-btn:hover {
+            background-color: #218838;
+        }
+
+        .reject-btn {
+            background-color: #ffc107;
+            color: black;
+        }
+
+        .reject-btn:hover {
+            background-color: #e0a800;
+        }
+
+        .logout-btn {
+            background-color: #dc3545;
+        }
+
+        .logout-btn:hover {
+            background-color: #bd2130;
+        }
+    </style>
+</head>
+<body>
+
+<h1>All Bookings (Admin View)</h1>
+
+<div class="top-bar">
+    <button onclick="fetchAdminBookings()">Refresh Bookings</button>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>Booking ID</th>
+        <th>User ID</th>
+        <th>Vehicle ID</th>
+        <th>Driver ID</th>
+        <th>Booking Date</th>
+        <th>Return Date</th>
+        <th>Status</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody id="adminBookingTableBody">
+    </tbody>
+</table>
+
+<script>
+    const BOOKING_API = '/bookings';
+
+    function fetchAdminBookings() {
+        fetch(`${BOOKING_API}/all`)
+            .then(res => res.json())
+            .then(data => {
+                const tbody = document.getElementById('adminBookingTableBody');
+                tbody.innerHTML = '';
+
+                data.forEach(b => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${b.bookingId}</td>
+                        <td>${b.userId}</td>
+                        <td>${b.vehicleId}</td>
+                        <td>${b.driverId}</td>
+                        <td>${b.bookingDate}</td>
+                        <td>${b.returnDate}</td>
+                        <td>${b.status}</td>
+                        <td>
+                            ${b.status === 'Pending' ? `
+                                <button class="approve-btn" onclick="updateBookingStatus('${b.bookingId}', 'approve')">Approve</button>
+                                <button class="reject-btn" onclick="updateBookingStatus('${b.bookingId}', 'reject')">Reject</button>
+                            ` : ''}
+                            <button onclick="deleteBookingById('${b.bookingId}')">Delete</button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Failed to load bookings.");
+            });
+    }
+
+    function updateBookingStatus(id, action) {
+        fetch(`${BOOKING_API}/${action}/${id}`, {
+            method: 'PUT'
+        })
+            .then(() => {
+                alert(`Booking ${action}d.`);
+                fetchAdminBookings();
+            })
+            .catch(() => alert("Failed to update status."));
+    }
+
+    function deleteBookingById(id) {
+        if (!confirm(`Delete booking ID ${id}?`)) return;
+
+        fetch(`${BOOKING_API}/delete/${id}`, {
+            method: 'DELETE'
+        }).then(() => {
+            alert("Booking deleted!");
+            fetchAdminBookings();
+        }).catch(err => {
+            console.error(err);
+            alert("Failed to delete booking.");
+        });
+    }
+
+    function logout() {
+        window.location.href = 'admin-login.html';
+    }
+
+    window.onload = fetchAdminBookings;
+</script>
+
+</body>
+</html>

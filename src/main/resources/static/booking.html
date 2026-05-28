@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking Management</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f4f7;
+            padding: 30px;
+        }
+
+        section {
+            background: white;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 700px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #ccc;
+        }
+
+        h1, h2 {
+            color: #004b8d;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            box-sizing: border-box;
+        }
+
+        .booking-card {
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            background: #fafafa;
+        }
+
+        button {
+            background-color: #004b8d;
+            color: white;
+            border: none;
+        }
+
+        button:hover {
+            background-color: #002f5c;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Booking Management</h1>
+
+<!-- Add Booking -->
+<section>
+    <h2>Add Booking</h2>
+    <form id="addBookingForm">
+        <input type="text" id="bookingId" placeholder="Booking ID" required>
+        <input type="text" id="userId" placeholder="User ID" required>
+        <input type="text" id="vehicleId" placeholder="Vehicle ID" required>
+        <input type="text" id="driverId" placeholder="Driver ID" required>
+        <input type="date" id="bookingDate" placeholder="Booking Date" required>
+        <input type="date" id="returnDate" placeholder="Return Date" required>
+        <input type="text" id="status" placeholder="Status (Confirmed/Cancelled)" required>
+        <button type="submit">Add Booking</button>
+    </form>
+</section>
+
+<!-- View Bookings -->
+<section>
+    <h2>All Bookings</h2>
+    <button onclick="fetchBookings()">Refresh</button>
+    <div id="bookingList"></div>
+</section>
+
+<!-- Update Booking -->
+<section>
+    <h2>Update Booking</h2>
+    <form id="updateBookingForm">
+        <input type="text" id="updateBookingId" placeholder="Booking ID to Update" required>
+        <input type="text" id="updateUserId" placeholder="User ID" required>
+        <input type="text" id="updateVehicleId" placeholder="Vehicle ID" required>
+        <input type="text" id="updateDriverId" placeholder="Driver ID" required>
+        <input type="date" id="updateBookingDate" required>
+        <input type="date" id="updateReturnDate" required>
+        <input type="text" id="updateStatus" placeholder="Status" required>
+        <button type="submit">Update Booking</button>
+    </form>
+</section>
+
+<!-- Delete Booking -->
+<section>
+    <h2>Delete Booking</h2>
+    <input type="text" id="deleteBookingId" placeholder="Booking ID">
+    <button onclick="deleteBooking()">Delete</button>
+</section>
+
+<script src="scripts/booking.js"></script>
+</body>
+</html>

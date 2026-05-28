@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Reviews | RentalX Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: hsl(220, 85%, 57%);
+            --primary-hover: hsl(220, 85%, 47%);
+            --sidebar-bg: hsl(222, 47%, 11%);
+            --bg-gradient: linear-gradient(135deg, hsl(210, 30%, 96%) 0%, hsl(220, 20%, 92%) 100%);
+            --card-bg: white;
+            --text-main: hsl(222, 47%, 15%);
+            --text-muted: hsl(215, 16%, 47%);
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.06);
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            padding: 2.5rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            box-shadow: 4px 0 25px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 2.5rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 1.5rem;
+        }
+
+        .sidebar-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            flex-grow: 1;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 0.9rem 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+
+        .sidebar-link:hover, .sidebar-link.active {
+            background: var(--primary);
+            color: white;
+            transform: translateX(4px);
+        }
+
+        .logout-btn {
+            padding: 0.9rem;
+            background: hsl(0, 75%, 50%);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+            margin-top: auto;
+        }
+
+        .logout-btn:hover {
+            background: hsl(0, 75%, 43%);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content Styling */
+        .main-content {
+            flex-grow: 1;
+            padding: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .page-header {
+            margin-bottom: 2.5rem;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            padding-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.4rem;
+            color: var(--sidebar-bg);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        .refresh-btn {
+            padding: 10px 22px;
+            background: hsl(160, 80%, 38%);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+
+        .refresh-btn:hover {
+            background: hsl(160, 80%, 32%);
+            transform: translateY(-2px);
+        }
+
+        /* Table container styling */
+        .table-container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(0,0,0,0.02);
+            overflow-x: auto;
+            padding: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 1.2rem;
+            border-bottom: 1px solid hsl(215, 20%, 93%);
+        }
+
+        th {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            color: var(--sidebar-bg);
+            font-size: 0.95rem;
+            background: hsl(210, 30%, 98%);
+        }
+
+        .rating-stars {
+            color: hsl(45, 100%, 51%);
+            font-weight: bold;
+            font-size: 1.05rem;
+        }
+
+        button.delete-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: hsl(0, 75%, 50%);
+            color: white;
+            transition: var(--transition);
+            box-shadow: 0 2px 6px rgba(239, 68, 68, 0.15);
+        }
+
+        button.delete-btn:hover {
+            background: hsl(0, 75%, 43%);
+            transform: translateY(-1px);
+        }
+
+        /* Responsiveness */
+        @media (max-width: 900px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                padding: 1.5rem;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            }
+
+            .sidebar-header {
+                margin-bottom: 1.5rem;
+                padding-bottom: 1rem;
+            }
+
+            .sidebar-links {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.5rem;
+            }
+
+            .sidebar-link {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .logout-btn {
+                margin-top: 1rem;
+                width: 100%;
+            }
+
+            .main-content {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<script>
+    // Security redirect guard
+    const adminId = sessionStorage.getItem('adminId');
+    if (!adminId) {
+        alert("Unauthorized access. Redirecting to login...");
+        window.location.href = "admin-login.html";
+    }
+</script>
+
+<div class="sidebar">
+    <div class="sidebar-header">RentalX Control</div>
+    <div class="sidebar-links">
+        <a href="admin-dashboard.html" class="sidebar-link">Dashboard Overview</a>
+        <a href="vehicle.html" class="sidebar-link">Manage Vehicles</a>
+        <a href="driver.html" class="sidebar-link">Manage Drivers</a>
+        <a href="admin-booking.html" class="sidebar-link">All Bookings</a>
+        <a href="review-admin.html" class="sidebar-link active">Customer Reviews</a>
+        <a href="all-vehicles.html" class="sidebar-link">Catalog Browser</a>
+        <a href="admin-manage.html" class="sidebar-link">Admin Team</a>
+    </div>
+    <button onclick="logout()" class="logout-btn">Log Out</button>
+</div>
+
+<div class="main-content">
+    <div class="page-header">
+        <div>
+            <h1>Customer Reviews</h1>
+            <p>Monitor, audit, and manage user reviews and service ratings.</p>
+        </div>
+        <button onclick="fetchAdminReviews()" class="refresh-btn">Refresh Feedback</button>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+            <tr>
+                <th style="width: 12%;">Review ID</th>
+                <th style="width: 12%;">User ID</th>
+                <th style="width: 12%;">Vehicle ID</th>
+                <th style="width: 40%;">Review Content</th>
+                <th style="width: 14%;">Rating</th>
+                <th style="width: 10%;">Action</th>
+            </tr>
+            </thead>
+            <tbody id="adminReviewTableBody">
+            <!-- Filled dynamically -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const BASE_URL = '/reviews';
+
+    function logout() {
+        sessionStorage.removeItem('adminId');
+        window.location.href = 'index.html';
+    }
+
+    function fetchAdminReviews() {
+        fetch(`${BASE_URL}/all`)
+            .then(res => {
+                if (!res.ok) throw new Error("Failed to load reviews.");
+                return res.json();
+            })
+            .then(data => {
+                const tbody = document.getElementById('adminReviewTableBody');
+                tbody.innerHTML = '';
+
+                if (data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted); font-style: italic;">No customer reviews submitted yet.</td></tr>';
+                    return;
+                }
+
+                data.forEach(r => {
+                    const row = document.createElement('tr');
+                    const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+                    row.innerHTML = `
+                        <td><strong style="color: var(--sidebar-bg);">${r.reviewId}</strong></td>
+                        <td>${r.userId}</td>
+                        <td><span style="color: var(--primary); font-weight: 600;">${r.vehicleId}</span></td>
+                        <td><div style="text-align: left; line-height: 1.5;">${r.reviewText}</div></td>
+                        <td><span class="rating-stars">${stars}</span> <span style="font-size: 0.85rem; color: var(--text-muted); font-weight:600;">(${r.rating}/5)</span></td>
+                        <td><button class="delete-btn" onclick="deleteReviewById('${r.reviewId}')">Delete</button></td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Failed to load customer reviews.");
+            });
+    }
+
+    function deleteReviewById(id) {
+        if (!confirm(`Are you sure you want to delete review ID ${id}? This action is irreversible.`)) return;
+
+        fetch(`${BASE_URL}/delete/${id}`, {
+            method: 'DELETE'
+        }).then(res => {
+            if (!res.ok) throw new Error();
+            alert("Customer review deleted successfully.");
+            fetchAdminReviews();
+        }).catch(err => {
+            console.error(err);
+            alert("Failed to delete review.");
+        });
+    }
+
+    window.onload = fetchAdminReviews;
+</script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Staff Login | RentalX</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to right, #f1f1f1, #ffffff);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            color: #00796b;
+        }
+
+        .staff-button {
+            display: block;
+            width: 100%;
+            margin: 15px 0;
+            padding: 14px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            background-color: #00796b;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+        }
+
+        .staff-button:hover {
+            background-color: #004d40;
+        }
+
+        a {
+            font-size: 14px;
+            color: #0288d1;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            margin-top: 25px;
+            font-size: 13px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Staff Login</h1>
+
+    <a class="staff-button" href="admin-login.html">Login as Admin</a>
+    <a class="staff-button" href="driver-login.html">Login as Driver</a>
+
+    <a href="index.html">Back to User Login</a>
+
+    <div class="footer">&copy; 2025 RentalX Platform</div>
+</div>
+</body>
+</html>

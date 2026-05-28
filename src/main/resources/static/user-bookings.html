@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Bookings - RentalX</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(180deg, #e6ecf3 0%, #f5f7fa 100%);
+            color: #2d3748;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        nav {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 1.2rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-brand {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-decoration: none;
+            letter-spacing: -0.025em;
+            transition: opacity 0.2s ease;
+        }
+
+        .nav-brand:hover {
+            opacity: 0.9;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: color 0.2s ease, transform 0.2s ease;
+            padding: 0.5rem 0;
+        }
+
+        .nav-link:hover {
+            color: #dbeafe;
+            transform: translateY(-2px);
+        }
+
+        .logout-btn {
+            padding: 0.6rem 1.8rem;
+            background: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .logout-btn:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 3rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .page-header {
+            text-align: center;
+            color: #1e3a8a;
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            letter-spacing: -0.025em;
+        }
+
+        .section-container {
+            background: white;
+            width: 100%;
+            max-width: 1000px;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .section-container:hover {
+            transform: translateY(-5px);
+        }
+
+        .booking-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+
+        .booking-table th {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 500;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .booking-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: middle;
+            font-size: 0.95rem;
+            color: #4b5563;
+        }
+
+        .booking-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .booking-table tr:hover {
+            background-color: #f9fafb;
+            transition: background-color 0.2s ease;
+        }
+
+        .status {
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .status-active {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-completed {
+            background-color: #e5e7eb;
+            color: #374151;
+        }
+
+        .status-cancelled {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            margin-right: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #1e40af;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background-color: #dc2626;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #b91c1c;
+            transform: translateY(-2px);
+        }
+
+        .review-form-container {
+            display: none;
+            background: white;
+            width: 100%;
+            max-width: 600px;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            margin-top: 2rem;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .review-form-container.active {
+            display: block;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .form-header {
+            color: #1e3a8a;
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #1f2937;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-control:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+            outline: none;
+        }
+
+        .rating-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .rating-label {
+            font-weight: 500;
+            color: #1f2937;
+        }
+
+        .rating-options {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .rating-option {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .rating-option input {
+            accent-color: #2563eb;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: #10b981;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #059669;
+            transform: translateY(-2px);
+        }
+
+        .no-bookings {
+            text-align: center;
+            padding: 2rem;
+            color: #6b7280;
+            font-style: italic;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+                gap: 1rem;
+                flex-wrap: wrap;
+            }
+
+            .section-container {
+                padding: 1.5rem;
+            }
+
+            .booking-table {
+                font-size: 0.9rem;
+            }
+
+            .booking-table th,
+            .booking-table td {
+                padding: 0.8rem 0.5rem;
+            }
+
+            .btn {
+                padding: 0.5rem 0.8rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .review-form-container {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .booking-table {
+                display: block;
+            }
+
+            .booking-table thead {
+                display: none;
+            }
+
+            .booking-table tr {
+                display: block;
+                margin-bottom: 1rem;
+                border: 1px solid #d1d5db;
+                border-radius: 8px;
+                padding: 0.5rem;
+                background: white;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            }
+
+            .booking-table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.5rem;
+                border-bottom: 1px solid #e5e7eb;
+            }
+
+            .booking-table td:before {
+                content: attr(data-label);
+                font-weight: 600;
+                margin-right: 1rem;
+                color: #1e3a8a;
+                flex: 1;
+            }
+
+            .booking-table td:last-child {
+                border-bottom: none;
+            }
+
+            .btn-group {
+                display: flex;
+                justify-content: center;
+                gap: 0.5rem;
+                margin-top: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav>
+    <a href="HomePage.html" class="nav-brand">RentalX - User Panel</a>
+    <div class="nav-links">
+        <a href="user-profile.html" class="nav-link">Profile</a>
+        <a href="rented-vehicles.html" class="nav-link">Bookings</a>
+        <a href="user-reviews.html" class="nav-link">Reviews</a>
+        <button onclick="logout()" class="logout-btn">Logout</button>
+    </div>
+</nav>
+
+<div class="main-content">
+    <h1 class="page-header">Your Bookings</h1>
+
+    <div class="section-container">
+        <table class="booking-table">
+            <thead>
+            <tr>
+                <th>Booking ID</th>
+                <th>Vehicle ID</th>
+                <th>Booking Date</th>
+                <th>Return Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody id="bookingTableBody"></tbody>
+        </table>
+    </div>
+
+    <div id="reviewForm" class="review-form-container">
+        <h2 class="form-header">Leave a Review</h2>
+        <form id="reviewFormElement">
+            <input type="hidden" id="reviewVehicleId">
+            <div class="form-group">
+                <label for="reviewText">Your Experience</label>
+                <textarea id="reviewText" class="form-control" placeholder="Share your experience with this vehicle..." required></textarea>
+            </div>
+            <div class="rating-group">
+                <span class="rating-label">Rating:</span>
+                <div class="rating-options">
+                    <label class="rating-option"><input type="radio" name="rating" value="1"> 1</label>
+                    <label class="rating-option"><input type="radio" name="rating" value="2"> 2</label>
+                    <label class="rating-option"><input type="radio" name="rating" value="3"> 3</label>
+                    <label class="rating-option"><input type="radio" name="rating" value="4"> 4</label>
+                    <label class="rating-option"><input type="radio" name="rating" value="5"> 5</label>
+                </div>
+            </div>
+            <button type="submit" class="submit-btn">Submit Review</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const userId = sessionStorage.getItem('loggedInUserId');
+
+    if (!userId) {
+        alert("Please login to access this page.");
+        window.location.href = "user-login.html";
+    }
+
+    function getStatusClass(status) {
+        status = status.toLowerCase();
+        if (status.includes('active')) return 'status-active';
+        if (status.includes('complete')) return 'status-completed';
+        if (status.includes('cancel')) return 'status-cancelled';
+        return '';
+    }
+
+    function loadUserBookings() {
+        fetch(`/bookings/user/${userId}`)
+            .then(res => res.json())
+            .then(data => {
+                const tbody = document.getElementById('bookingTableBody');
+                tbody.innerHTML = '';
+
+                if (data.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="no-bookings">No bookings found. Start by booking a vehicle!</td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                data.forEach(b => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td data-label="Booking ID">${b.bookingId}</td>
+                        <td data-label="Vehicle ID">${b.vehicleId}</td>
+                        <td data-label="Booking Date">${b.bookingDate}</td>
+                        <td data-label="Return Date">${b.returnDate}</td>
+                        <td data-label="Status">
+                            <span class="status ${getStatusClass(b.status)}">${b.status}</span>
+                        </td>
+                        <td data-label="Actions">
+                            <div class="btn-group">
+                                <button class="btn btn-primary" onclick="openReviewForm('${b.vehicleId}')">Review</button>
+                                <button class="btn btn-danger" onclick="deleteBooking('${b.bookingId}')">Delete</button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading bookings:', error);
+                document.getElementById('bookingTableBody').innerHTML = `
+                    <tr>
+                        <td colspan="6" class="no-bookings">Error loading bookings. Please try again.</td>
+                    </tr>
+                `;
+            });
+    }
+
+    function deleteBooking(id) {
+        if (!confirm("Are you sure you want to delete this booking? This action cannot be undone.")) return;
+
+        fetch(`/bookings/delete/${id}`, {
+            method: 'DELETE'
+        })
+            .then(() => {
+                alert("Booking deleted successfully.");
+                loadUserBookings();
+            })
+            .catch(error => {
+                console.error('Error deleting booking:', error);
+                alert('Failed to delete booking. Please try again.');
+            });
+    }
+
+    function openReviewForm(vehicleId) {
+        const reviewForm = document.getElementById('reviewForm');
+        reviewForm.style.display = 'block';
+        reviewForm.classList.add('active');
+        document.getElementById('reviewVehicleId').value = vehicleId;
+        document.getElementById('reviewText').value = '';
+        document.querySelectorAll('input[name="rating"]').forEach(r => r.checked = false);
+        window.scrollTo({
+            top: reviewForm.offsetTop - 20,
+            behavior: 'smooth'
+        });
+    }
+
+    document.getElementById('reviewFormElement').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const reviewId = `R${Date.now()}`;
+        const vehicleId = document.getElementById('reviewVehicleId').value;
+        const reviewText = document.getElementById('reviewText').value;
+        const rating = document.querySelector('input[name="rating"]:checked');
+
+        if (!rating) {
+            alert("Please select a rating.");
+            return;
+        }
+
+        const review = {
+            reviewId: reviewId,
+            userId: userId,
+            vehicleId: vehicleId,
+            reviewText: reviewText,
+            rating: parseInt(rating.value)
+        };
+
+        fetch('/reviews/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(review)
+        })
+            .then(() => {
+                alert("Review submitted successfully!");
+                document.getElementById('reviewForm').style.display = 'none';
+                document.getElementById('reviewForm').classList.remove('active');
+            })
+            .catch(error => {
+                console.error('Error submitting review:', error);
+                alert('Failed to submit review. Please try again.');
+            });
+    });
+
+    function logout() {
+        sessionStorage.removeItem('loggedInUserId');
+        window.location.href = 'index.html';
+    }
+
+    window.onload = loadUserBookings;
+</script>
+</body>
+</html>

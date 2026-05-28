@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | RentalX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: hsl(15, 85%, 53%);
+            --primary-hover: hsl(15, 85%, 45%);
+            --accent: hsl(20, 80%, 40%);
+            --bg-gradient: linear-gradient(135deg, hsl(15, 10%, 95%) 0%, hsl(15, 15%, 88%) 100%);
+            --card-bg: hsla(0, 0%, 100%, 0.85);
+            --text-main: hsl(222, 47%, 11%);
+            --text-muted: hsl(215, 16%, 47%);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-wrapper {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 40px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            max-width: 420px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transition: var(--transition);
+        }
+
+        .login-wrapper:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .logo-area {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-area h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2rem;
+            color: var(--primary);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 8px;
+        }
+
+        .logo-area p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: hsl(222, 20%, 30%);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 1rem;
+            border: 1px solid hsl(15, 20%, 85%);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--text-main);
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(244, 63, 94, 0.15);
+            outline: none;
+            background: white;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary) 0%, hsl(15, 80%, 48%) 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(244, 63, 94, 0.2);
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            background: linear-gradient(135deg, var(--primary-hover) 0%, hsl(15, 80%, 40%) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(244, 63, 94, 0.25);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .links-area {
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        .links-area a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .links-area a:hover {
+            color: var(--primary-hover);
+            text-decoration: underline;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="login-wrapper">
+    <div class="logo-area">
+        <h1>RentalX</h1>
+        <p>Administrative Control Center</p>
+    </div>
+    <form id="adminLoginForm">
+        <div class="form-group">
+            <label for="adminId">Admin ID</label>
+            <input type="text" id="adminId" class="form-control" placeholder="Enter administrative ID" required>
+        </div>
+        <div class="form-group">
+            <label for="adminPassword">Password</label>
+            <input type="password" id="adminPassword" class="form-control" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn-submit">Access Dashboard</button>
+    </form>
+
+    <div class="links-area">
+        <a href="index.html">← Back to Portal Home</a>
+    </div>
+
+    <div class="footer">&copy; 2026 RentalX Admin. All rights reserved.</div>
+</div>
+
+<script>
+    // Redirect if already logged in
+    if (sessionStorage.getItem('adminId')) {
+        window.location.href = "admin-dashboard.html";
+    }
+
+    document.getElementById('adminLoginForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const id = document.getElementById('adminId').value.trim();
+        const password = document.getElementById('adminPassword').value;
+
+        fetch(`/admin/login?adminId=${id}&password=${password}`, { method: 'POST' })
+            .then(res => {
+                if (!res.ok) throw new Error("Invalid credentials");
+                return res.json();
+            })
+            .then(data => {
+                if (data && data.adminId) {
+                    sessionStorage.setItem('adminId', data.adminId);
+                    window.location.href = "admin-dashboard.html";
+                } else {
+                    alert("Invalid admin ID or password.");
+                }
+            })
+            .catch(err => {
+                console.error('Admin login failed:', err);
+                alert("Invalid admin ID or password.");
+            });
+    });
+</script>
+</body>
+</html>

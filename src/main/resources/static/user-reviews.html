@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Reviews | RentalX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: hsl(220, 85%, 57%);
+            --primary-hover: hsl(220, 85%, 47%);
+            --accent: hsl(45, 100%, 51%);
+            --bg-gradient: linear-gradient(180deg, hsl(210, 30%, 96%) 0%, hsl(220, 20%, 92%) 100%);
+            --card-bg: white;
+            --text-main: hsl(222, 47%, 15%);
+            --text-muted: hsl(215, 16%, 47%);
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 15px 35px rgba(0, 0, 0, 0.1);
+            --radius: 14px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            background: linear-gradient(135deg, hsl(220, 80%, 35%) 0%, hsl(220, 85%, 57%) 100%);
+            padding: 1.2rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-brand {
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            text-decoration: none;
+            letter-spacing: -0.03em;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: var(--transition);
+            position: relative;
+            padding: 4px 0;
+        }
+
+        .nav-link:hover {
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background: white;
+            transition: var(--transition);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .logout-btn {
+            padding: 0.6rem 1.6rem;
+            background: hsl(0, 75%, 50%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2);
+        }
+
+        .logout-btn:hover {
+            background: hsl(0, 75%, 43%);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 3rem 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: hsl(222, 47%, 11%);
+            letter-spacing: -0.02em;
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        /* Sections */
+        .section-container {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(0,0,0,0.02);
+            margin-bottom: 3rem;
+            transition: var(--transition);
+        }
+
+        .section-container:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            color: hsl(222, 47%, 11%);
+            font-size: 1.6rem;
+            margin-bottom: 1.8rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+            font-weight: 700;
+        }
+
+        /* Review Cards */
+        .review-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .review-card {
+            padding: 2rem;
+            border-radius: 14px;
+            background: hsl(210, 30%, 98%);
+            border-left: 4px solid var(--primary);
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            border-top: 1px solid rgba(0,0,0,0.01);
+            border-bottom: 1px solid rgba(0,0,0,0.01);
+            border-right: 1px solid rgba(0,0,0,0.01);
+        }
+
+        .review-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+            background: white;
+        }
+
+        .review-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .review-vehicle {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .review-rating {
+            color: var(--accent);
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .review-text {
+            margin-bottom: 1.5rem;
+            color: hsl(222, 20%, 25%);
+            font-size: 0.98rem;
+            line-height: 1.6;
+        }
+
+        .review-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 8px 18px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, hsl(220, 80%, 50%) 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.15);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-hover) 0%, hsl(220, 80%, 42%) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-danger {
+            background: hsl(0, 75%, 50%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.15);
+        }
+
+        .btn-danger:hover {
+            background: hsl(0, 75%, 43%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(239, 68, 68, 0.2);
+        }
+
+        /* Forms styling */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: hsl(222, 20%, 30%);
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid hsl(215, 20%, 85%);
+            border-radius: 10px;
+            font-size: 0.98rem;
+            background: rgba(249, 250, 251, 0.8);
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+            outline: none;
+            background: white;
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .rating-group {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .rating-group label {
+            font-weight: 500;
+            color: hsl(222, 20%, 30%);
+            font-size: 0.9rem;
+        }
+
+        .rating-options {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .rating-option {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .rating-option input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        .no-reviews {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 3rem;
+            font-style: italic;
+            font-size: 1.05rem;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 1.2rem;
+                padding: 1rem;
+            }
+
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+                gap: 1.2rem;
+                flex-wrap: wrap;
+            }
+
+            .main-content {
+                padding: 2rem 1rem;
+            }
+
+            .section-container {
+                padding: 1.5rem;
+            }
+
+            .review-meta {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .review-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<script>
+    // Security redirect guard
+    const userId = sessionStorage.getItem('loggedInUserId');
+    if (!userId) {
+        alert("Please login to access this page.");
+        window.location.href = "user-login.html";
+    }
+</script>
+
+<nav>
+    <a href="HomePage.html" class="nav-brand">RentalX</a>
+    <div class="nav-links">
+        <a href="user-profile.html" class="nav-link">Profile</a>
+        <a href="user-bookings.html" class="nav-link">Bookings</a>
+        <a href="user-reviews.html" class="nav-link">Reviews</a>
+        <button onclick="logout()" class="logout-btn">Log Out</button>
+    </div>
+</nav>
+
+<div class="main-content">
+    <div class="page-header">
+        <h1>My Reviews</h1>
+        <p>Manage and view your feedback for rented vehicles.</p>
+    </div>
+
+    <div class="section-container">
+        <h2 class="section-title">Your Review History</h2>
+        <div class="review-list" id="reviewList"></div>
+    </div>
+
+    <div class="section-container">
+        <h2 class="section-title" id="formTitle">Add New Review</h2>
+        <form id="reviewFormElement">
+            <input type="hidden" id="reviewId">
+            <div class="form-group">
+                <label for="vehicleId">Vehicle ID</label>
+                <input type="text" id="vehicleId" class="form-control" placeholder="Enter vehicle ID (e.g. V001)" required>
+            </div>
+            <div class="form-group">
+                <label for="reviewText">Your Review</label>
+                <textarea id="reviewText" class="form-control" placeholder="Tell us about your rental experience..." required></textarea>
+            </div>
+            <div class="rating-group">
+                <label>Experience Rating:</label>
+                <div class="rating-options">
+                    <label class="rating-option"><input type="radio" name="rating" value="1" required> 1</label>
+                    <label class="rating-option"><input type="radio" name="rating" value="2"> 2</label>
+                    <label class="rating-option"><input type="radio" name="rating" value="3"> 3</label>
+                    <label class="rating-option"><input type="radio" name="rating" value="4"> 4</label>
+                    <label class="rating-option"><input type="radio" name="rating" value="5"> 5</label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: auto; padding: 12px 30px;">Submit Review</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function logout() {
+        sessionStorage.removeItem('loggedInUserId');
+        window.location.href = 'index.html';
+    }
+
+    function loadUserReviews() {
+        fetch('/reviews/all')
+            .then(res => {
+                if (!res.ok) throw new Error("Failed to load reviews.");
+                return res.json();
+            })
+            .then(data => {
+                const userReviews = data.filter(r => r.userId === userId);
+                const container = document.getElementById('reviewList');
+                container.innerHTML = '';
+
+                if (userReviews.length === 0) {
+                    container.innerHTML = '<div class="no-reviews">No reviews submitted yet. Try reviewing a rented vehicle below!</div>';
+                    return;
+                }
+
+                userReviews.forEach(r => {
+                    const reviewCard = document.createElement('div');
+                    reviewCard.className = 'review-card';
+                    reviewCard.innerHTML = `
+                        <div class="review-meta">
+                            <span class="review-vehicle"><strong>Vehicle ID:</strong> ${r.vehicleId}</span>
+                            <span class="review-rating">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)} (${r.rating}/5)</span>
+                        </div>
+                        <div class="review-text">${r.reviewText}</div>
+                        <div class="review-actions">
+                            <button class="btn btn-primary" onclick="editReview('${r.reviewId}', '${r.vehicleId}', \`${r.reviewText.replace(/`/g, "\\`").replace(/\$/g, "\\$")}\`, ${r.rating})">Update</button>
+                            <button class="btn btn-danger" onclick="deleteReview('${r.reviewId}')">Delete</button>
+                        </div>
+                    `;
+                    container.appendChild(reviewCard);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading reviews:', error);
+                document.getElementById('reviewList').innerHTML = '<div class="no-reviews">Error loading reviews. Please try again.</div>';
+            });
+    }
+
+    function editReview(id, vehicleId, reviewText, rating) {
+        document.getElementById('formTitle').textContent = 'Update Review';
+        document.getElementById('reviewId').value = id;
+        document.getElementById('vehicleId').value = vehicleId;
+        document.getElementById('reviewText').value = reviewText;
+        
+        const radio = document.querySelector(`input[name="rating"][value="${rating}"]`);
+        if (radio) radio.checked = true;
+        
+        window.scrollTo({ top: document.getElementById('formTitle').offsetTop - 100, behavior: 'smooth' });
+    }
+
+    function deleteReview(id) {
+        if (!confirm("Are you sure you want to delete this review? This action cannot be undone.")) return;
+
+        fetch(`/reviews/delete/${id}`, { method: 'DELETE' })
+            .then(res => {
+                if (!res.ok) throw new Error();
+                alert("Review successfully deleted.");
+                loadUserReviews();
+            })
+            .catch(error => {
+                console.error('Error deleting review:', error);
+                alert('Failed to delete review. Please try again.');
+            });
+    }
+
+    document.getElementById('reviewFormElement').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const idField = document.getElementById('reviewId');
+        const isUpdate = idField.value.trim() !== '';
+        const reviewId = isUpdate ? idField.value : `R-${Date.now()}`;
+        const vehicleId = document.getElementById('vehicleId').value.trim();
+        const reviewText = document.getElementById('reviewText').value.trim();
+        const rating = document.querySelector('input[name="rating"]:checked');
+
+        if (!rating) {
+            alert("Please select a rating.");
+            return;
+        }
+
+        const reviewPayload = {
+            reviewId: reviewId,
+            userId: userId,
+            vehicleId: vehicleId,
+            reviewText: reviewText,
+            rating: parseInt(rating.value)
+        };
+
+        const endpoint = isUpdate ? `/reviews/update/${reviewId}` : '/reviews/add';
+        const method = isUpdate ? 'PUT' : 'POST';
+
+        fetch(endpoint, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(reviewPayload)
+        })
+            .then(res => {
+                if (!res.ok) throw new Error();
+                alert(isUpdate ? "Review updated successfully!" : "Review added successfully!");
+                idField.value = '';
+                document.getElementById('formTitle').textContent = 'Add New Review';
+                document.getElementById('reviewFormElement').reset();
+                loadUserReviews();
+            })
+            .catch(error => {
+                console.error('Error submitting review:', error);
+                alert('Failed to submit review. Please try again.');
+            });
+    });
+
+    window.onload = loadUserReviews;
+</script>
+</body>
+</html>

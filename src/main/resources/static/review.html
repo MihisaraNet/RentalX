@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Review Management</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<h1>Review Management</h1>
+
+<!-- Add Review Form -->
+<section>
+    <h2>Add Review</h2>
+    <form id="addReviewForm">
+        <input type="text" id="reviewId" placeholder="Review ID" required><br>
+        <input type="text" id="userId" placeholder="User ID" required><br>
+        <input type="text" id="vehicleId" placeholder="Vehicle ID" required><br>
+        <textarea id="reviewText" placeholder="Write your review here..." required></textarea><br>
+        <input type="number" id="rating" placeholder="Rating (1-5)" min="1" max="5" required><br>
+        <button type="submit">Add Review</button>
+    </form>
+</section>
+
+<!-- View All Reviews -->
+<section>
+    <h2>All Reviews</h2>
+    <button onclick="fetchReviews()">Refresh</button>
+    <div id="reviewList"></div>
+</section>
+
+<!-- Update Review -->
+<section>
+    <h2>Update Review</h2>
+    <form id="updateReviewForm">
+        <input type="text" id="updateReviewId" placeholder="Review ID to Update" required><br>
+        <input type="text" id="updateUserId" placeholder="User ID" required><br>
+        <input type="text" id="updateVehicleId" placeholder="Vehicle ID" required><br>
+        <textarea id="updateReviewText" placeholder="Updated review text..." required></textarea><br>
+        <input type="number" id="updateRating" placeholder="Rating (1-5)" min="1" max="5" required><br>
+        <button type="submit">Update Review</button>
+    </form>
+</section>
+
+<!-- Delete Review -->
+<section>
+    <h2>Delete Review</h2>
+    <input type="text" id="deleteReviewId" placeholder="Enter Review ID">
+    <button onclick="deleteReview()">Delete</button>
+</section>
+
+<script src="scripts/review.js"></script>
+</body>
+</html>
