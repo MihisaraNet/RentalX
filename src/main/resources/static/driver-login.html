@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Driver Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f7fa, #b2ebf2);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+
+        .login-container {
+            background: white;
+            padding: 2.5rem 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #0077b6;
+            margin-bottom: 1.5rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            margin: 0.6rem 0;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #00b4d8;
+            box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.2);
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            margin-top: 1rem;
+            font-size: 1rem;
+            background-color: #0077b6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #005f8d;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 500px) {
+            .login-container {
+                margin: 1rem;
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <h1>Driver Login</h1>
+    <form id="driverLoginForm">
+        <input type="text" id="driverId" placeholder="Driver ID" required />
+        <input type="password" id="driverPassword" placeholder="Password" required />
+        <button type="submit">Login</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('driverLoginForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const id = document.getElementById('driverId').value;
+        const password = document.getElementById('driverPassword').value;
+
+        fetch(`/driver/login?driverId=${id}&password=${password}`, {
+            method: 'POST'
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("Invalid credentials");
+                return res.json();
+            })
+            .then(data => {
+                if (data && data.driverId) {
+                    sessionStorage.setItem("driverId", data.driverId);
+                    window.location.href = "driver-dashboard.html";
+                } else {
+                    alert("Login failed. Invalid ID or password.");
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Login failed.");
+            });
+    });
+</script>
+
+</body>
+</html>
