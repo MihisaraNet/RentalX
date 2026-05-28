@@ -135,5 +135,21 @@ rentalX/
 
 ---
 
+## 👥 Contributors & Credits
+
+This project was developed by group **PGNO_92** (1st Year, 2nd Semester students) at the **Sri Lanka Institute of Information Technology (SLIIT)**.
+
+| Student ID | Name | Role / Responsibility |
+| :--- | :--- | :--- |
+| **IT24100710** | Ekanayaka K.E.M.C.W | Admin Module |
+| **IT24100987** | Sathursikan.S | Vehicle Module |
+| **IT24100618** | Inshaf M J M | Booking Module |
+| **IT24100982** | Agaash N | Driver Module |
+| **IT24100883** | Karanayaka K.K.I.M | Users Module |
+| **IT24102920** | Balasuriya W.N.A | Review Module |
+
+---
+
 ## 📝 License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
