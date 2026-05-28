@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Login | RentalX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: hsl(220, 85%, 57%);
+            --primary-hover: hsl(220, 85%, 47%);
+            --accent: hsl(200, 80%, 40%);
+            --bg-gradient: linear-gradient(135deg, hsl(210, 30%, 96%) 0%, hsl(220, 20%, 90%) 100%);
+            --card-bg: hsla(0, 0%, 100%, 0.85);
+            --text-main: hsl(222, 47%, 11%);
+            --text-muted: hsl(215, 16%, 47%);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+            --radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-wrapper {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 40px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            max-width: 420px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transition: var(--transition);
+        }
+
+        .login-wrapper:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .logo-area {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-area h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2rem;
+            color: var(--primary);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 8px;
+        }
+
+        .logo-area p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: hsl(222, 20%, 30%);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 1rem;
+            border: 1px solid hsl(215, 20%, 85%);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--text-main);
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+            outline: none;
+            background: white;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary) 0%, hsl(220, 80%, 50%) 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            background: linear-gradient(135deg, var(--primary-hover) 0%, hsl(220, 80%, 42%) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .links-area {
+            margin-top: 25px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .links-area a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .links-area a:hover {
+            color: var(--primary-hover);
+            text-decoration: underline;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="login-wrapper">
+    <div class="logo-area">
+        <h1>RentalX</h1>
+        <p>Sign in to explore & book your ride</p>
+    </div>
+    <form id="userLoginForm">
+        <div class="form-group">
+            <label for="userId">User ID</label>
+            <input type="text" id="userId" class="form-control" placeholder="Enter your ID" required>
+        </div>
+        <div class="form-group">
+            <label for="userPassword">Password</label>
+            <input type="password" id="userPassword" class="form-control" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn-submit">Sign In</button>
+    </form>
+
+    <div class="links-area">
+        <a href="user-auth.html">Don't have an account? Register now</a>
+        <a href="staff-login.html">Are you a staff member?</a>
+    </div>
+
+    <div class="footer">&copy; 2026 RentalX Platform. All rights reserved.</div>
+</div>
+
+<script>
+    // Redirect if already logged in
+    if (sessionStorage.getItem('loggedInUserId')) {
+        window.location.href = "HomePage.html";
+    }
+
+    document.getElementById('userLoginForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const id = document.getElementById('userId').value.trim();
+        const password = document.getElementById('userPassword').value;
+
+        fetch(`/user/login?userId=${id}&password=${password}`, { method: 'POST' })
+            .then(res => {
+                if (!res.ok) throw new Error("Invalid credentials");
+                return res.json();
+            })
+            .then(data => {
+                if (data && data.userId) {
+                    sessionStorage.setItem('loggedInUserId', data.userId);
+                    window.location.href = "HomePage.html";
+                } else {
+                    alert("Invalid user ID or password.");
+                }
+            })
+            .catch(err => {
+                console.error('Login failed:', err);
+                alert("Invalid user ID or password.");
+            });
+    });
+</script>
+</body>
+</html>
