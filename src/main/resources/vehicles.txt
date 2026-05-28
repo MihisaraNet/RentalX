@@ -1,0 +1,1 @@
+V001,BMW,HatchBack,false,7000.0,/uploads/abafd207-c86a-4a3b-9d1a-e83b93b3d6c5_images.jpeg,4
