@@ -1,83 +1,68 @@
 package com.OOP.rentalX.service;
 
 import com.OOP.rentalX.model.User;
+import com.OOP.rentalX.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+@Service
 public class UserService {
 
-    private static final String FILE_PATH = "src/main/resources/users.txt";
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public void register(User user) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
-            writer.write(toLine(user));
-            writer.newLine();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (!user.getPassword().startsWith("$2a$")) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
+        userRepository.save(user);
     }
 
     public User login(String userId, String password) {
-        return getAllUsers().stream()
-                .filter(u -> u.getUserId().equals(userId) && u.getPassword().equals(password))
-                .findFirst()
-                .orElse(null);
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            if (passwordEncoder.matches(password, user.getPassword()) || password.equals(user.getPassword())) {
+                return user;
+            }
+        }
+        return null;
     }
 
     public User getProfile(String userId) {
-        return getAllUsers().stream()
-                .filter(u -> u.getUserId().equals(userId))
-                .findFirst()
-                .orElse(null);
+        return userRepository.findById(userId).orElse(null);
     }
 
+    @Transactional
     public void updateProfile(User updatedUser) {
-        List<User> users = getAllUsers();
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
-            for (User u : users) {
-                if (u.getUserId().equals(updatedUser.getUserId())) {
-                    writer.write(toLine(updatedUser));
-                } else {
-                    writer.write(toLine(u));
+        userRepository.findById(updatedUser.getUserId()).ifPresent(existing -> {
+            existing.setName(updatedUser.getName());
+            existing.setEmail(updatedUser.getEmail());
+            existing.setPhone(updatedUser.getPhone());
+            if (updatedUser.getPassword() != null && !updatedUser.getPassword().trim().isEmpty()) {
+                if (!updatedUser.getPassword().equals(existing.getPassword())) {
+                    existing.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
                 }
-                writer.newLine();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            userRepository.save(existing);
+        });
     }
 
+    @Transactional
     public void deleteProfile(String userId) {
-        List<User> users = getAllUsers();
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
-            for (User u : users) {
-                if (!u.getUserId().equals(userId)) {
-                    writer.write(toLine(u));
-                    writer.newLine();
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        userRepository.deleteById(userId);
     }
 
-    private String toLine(User u) {
-        return u.getUserId() + "," + u.getName() + "," + u.getEmail() + "," + u.getPhone() + "," + u.getPassword();
-    }
-
-    private List<User> getAllUsers() {
-        List<User> list = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] p = line.split(",", 5);
-                list.add(new User(p[0], p[1], p[2], p[3], p[4]));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return list;
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 }

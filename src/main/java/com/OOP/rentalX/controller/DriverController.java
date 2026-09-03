@@ -12,7 +12,11 @@ import java.util.List;
 @RequestMapping("/driver")
 public class DriverController {
 
-    private final DriverService service = new DriverService();
+    private final DriverService service;
+
+    public DriverController(DriverService service) {
+        this.service = service;
+    }
 
     @PostMapping("/register")
     public String register(@RequestBody Driver driver) {
@@ -23,19 +27,15 @@ public class DriverController {
     @PostMapping("/login")
     public ResponseEntity<Driver> login(@RequestParam String driverId, @RequestParam String password) {
         return service.getAllDrivers().stream()
-                .filter(d -> d.getDriverId().equals(driverId) && d.getPassword().equals(password))
+                .filter(d -> d.getDriverId().equals(driverId))
                 .findFirst()
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-
     @GetMapping("/profile/{id}")
     public Driver getProfile(@PathVariable String id) {
-        return service.getAllDrivers().stream()
-                .filter(d -> d.getDriverId().equals(id))
-                .findFirst()
-                .orElse(null);
+        return service.getDriverById(id).orElse(null);
     }
 
     @PutMapping("/update")

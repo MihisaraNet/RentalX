@@ -1,16 +1,23 @@
 package com.OOP.rentalX.controller;
 
+import com.OOP.rentalX.dto.ApiResponse;
 import com.OOP.rentalX.model.User;
 import com.OOP.rentalX.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
 
-    private final UserService service = new UserService();
+    private final UserService service;
+
+    public UserController(UserService service) {
+        this.service = service;
+    }
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody User user) {
@@ -52,5 +59,10 @@ public class UserController {
     public String delete(@PathVariable String id) {
         service.deleteProfile(id);
         return "User deleted!";
+    }
+
+    @GetMapping("/all")
+    public List<User> getAll() {
+        return service.getAllUsers();
     }
 }

@@ -1,7 +1,9 @@
 package com.OOP.rentalX.controller;
 
+import com.OOP.rentalX.dto.ApiResponse;
 import com.OOP.rentalX.model.Review;
 import com.OOP.rentalX.service.ReviewService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,17 +12,31 @@ import java.util.List;
 @RequestMapping("/reviews")
 public class ReviewController {
 
-    private final ReviewService reviewService = new ReviewService();
+    private final ReviewService reviewService;
+
+    public ReviewController(ReviewService reviewService) {
+        this.reviewService = reviewService;
+    }
 
     @PostMapping("/add")
-    public String addReview(@RequestBody Review review) {
+    public ResponseEntity<ApiResponse<String>> addReview(@RequestBody Review review) {
         reviewService.addReview(review);
-        return "Review added successfully!";
+        return ResponseEntity.ok(ApiResponse.ok("Review added successfully!", review.getReviewId()));
     }
 
     @GetMapping("/all")
     public List<Review> getAllReviews() {
         return reviewService.getAllReviews();
+    }
+
+    @GetMapping("/vehicle/{vehicleId}")
+    public List<Review> getReviewsByVehicle(@PathVariable String vehicleId) {
+        return reviewService.getReviewsByVehicleId(vehicleId);
+    }
+
+    @GetMapping("/user/{userId}")
+    public List<Review> getReviewsByUser(@PathVariable String userId) {
+        return reviewService.getReviewsByUserId(userId);
     }
 
     @PutMapping("/update/{id}")

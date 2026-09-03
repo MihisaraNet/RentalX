@@ -1,78 +1,58 @@
 package com.OOP.rentalX.service;
 
 import com.OOP.rentalX.model.Driver;
+import com.OOP.rentalX.repository.DriverRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+@Service
 public class DriverService {
 
-    private static final String FILE_PATH = "src/main/resources/drivers.txt";
+    private final DriverRepository driverRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public DriverService(DriverRepository driverRepository, PasswordEncoder passwordEncoder) {
+        this.driverRepository = driverRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public void addDriver(Driver d) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
-            writer.write(toLine(d));
-            writer.newLine();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (!d.getPassword().startsWith("$2a$")) {
+            d.setPassword(passwordEncoder.encode(d.getPassword()));
         }
+        driverRepository.save(d);
     }
 
     public List<Driver> getAllDrivers() {
-        List<Driver> list = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                list.add(fromLine(line));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return list;
+        return driverRepository.findAll();
     }
 
+    public Optional<Driver> getDriverById(String driverId) {
+        return driverRepository.findById(driverId);
+    }
+
+    @Transactional
     public void updateDriver(Driver updated) {
-        List<Driver> drivers = getAllDrivers();
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
-            for (Driver d : drivers) {
-                if (d.getDriverId().equals(updated.getDriverId())) {
-                    writer.write(toLine(updated));
-                } else {
-                    writer.write(toLine(d));
+        driverRepository.findById(updated.getDriverId()).ifPresent(existing -> {
+            existing.setName(updated.getName());
+            existing.setLicenseNumber(updated.getLicenseNumber());
+            existing.setPhone(updated.getPhone());
+            existing.setEmail(updated.getEmail());
+            if (updated.getPassword() != null && !updated.getPassword().trim().isEmpty()) {
+                if (!updated.getPassword().equals(existing.getPassword())) {
+                    existing.setPassword(passwordEncoder.encode(updated.getPassword()));
                 }
-                writer.newLine();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            driverRepository.save(existing);
+        });
     }
 
-
+    @Transactional
     public void deleteDriver(String driverId) {
-        List<Driver> drivers = getAllDrivers();
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
-            for (Driver d : drivers) {
-                if (!d.getDriverId().equals(driverId)) {
-                    writer.write(toLine(d));
-                    writer.newLine();
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        driverRepository.deleteById(driverId);
     }
-
-    private String toLine(Driver d) {
-        return d.getDriverId() + "," + d.getName() + "," + d.getLicenseNumber() + "," +
-                d.getPhone() + "," + d.getEmail() + "," + d.getPassword();
-    }
-
-
-    private Driver fromLine(String line) {
-        String[] parts = line.split(",", 6);
-        return new Driver(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5]); // now 6 fields
-    }
-
 }
-

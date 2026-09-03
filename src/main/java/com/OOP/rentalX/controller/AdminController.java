@@ -12,7 +12,11 @@ import java.util.List;
 @RequestMapping("/admin")
 public class AdminController {
 
-    private final AdminService service = new AdminService();
+    private final AdminService service;
+
+    public AdminController(AdminService service) {
+        this.service = service;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<Admin> login(@RequestParam String adminId, @RequestParam String password) {
@@ -57,5 +61,4 @@ public class AdminController {
     public String updateAdmin(@RequestBody Admin updatedAdmin) {
         return service.updateAdmin(updatedAdmin) ? "Updated" : "Admin not found";
     }
-
 }

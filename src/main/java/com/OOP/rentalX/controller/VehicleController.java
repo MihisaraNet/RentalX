@@ -12,7 +12,11 @@ import java.util.List;
 @RequestMapping("/vehicles")
 public class VehicleController {
 
-    private final VehicleService vehicleService = new VehicleService();
+    private final VehicleService vehicleService;
+
+    public VehicleController(VehicleService vehicleService) {
+        this.vehicleService = vehicleService;
+    }
 
     @PostMapping("/add")
     public ResponseEntity<String> addVehicle(@RequestParam("vehicleId") String vehicleId,
@@ -21,7 +25,7 @@ public class VehicleController {
                                              @RequestParam("available") boolean available,
                                              @RequestParam("rentPrice") double rentPrice,
                                              @RequestParam("driverId") String driverId,
-                                             @RequestParam("image") MultipartFile image) {
+                                             @RequestParam(value = "image", required = false) MultipartFile image) {
         try {
             Vehicle v = new Vehicle(vehicleId, model, type, available, rentPrice, null, driverId);
             vehicleService.addVehicle(v, image);
@@ -30,7 +34,6 @@ public class VehicleController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
 
     @GetMapping("/driver/{driverId}")
     public List<Vehicle> getByDriver(@PathVariable String driverId) {
@@ -42,6 +45,18 @@ public class VehicleController {
         return vehicleService.getAllVehicles(sortByPrice);
     }
 
+    @GetMapping("/available")
+    public List<Vehicle> getAvailableVehicles() {
+        return vehicleService.getAvailableVehicles();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Vehicle> getVehicleById(@PathVariable String id) {
+        return vehicleService.getVehicleById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @PutMapping("/update/{id}")
     public String updateVehicle(@PathVariable String id,
                                 @RequestParam("model") String model,
@@ -49,8 +64,8 @@ public class VehicleController {
                                 @RequestParam("available") boolean available,
                                 @RequestParam("rentPrice") double rentPrice,
                                 @RequestParam(value = "image", required = false) MultipartFile image,
-                                @RequestParam("imagePath") String imagePath,
-                                @RequestParam("driverId") String driverId) {
+                                @RequestParam(value = "imagePath", required = false, defaultValue = "") String imagePath,
+                                @RequestParam(value = "driverId", required = false, defaultValue = "") String driverId) {
         Vehicle updatedVehicle = new Vehicle(id, model, type, available, rentPrice, imagePath, driverId);
         vehicleService.updateVehicle(id, updatedVehicle, image);
         return "Vehicle updated.";
@@ -62,7 +77,6 @@ public class VehicleController {
         return "Vehicle deleted.";
     }
 
-    //endpoint for removing a vehicle from the linked list
     @DeleteMapping("/rented/{id}")
     public String removeRentedVehicle(@PathVariable String id) {
         return vehicleService.removeFromRentedList(id)
@@ -70,8 +84,6 @@ public class VehicleController {
                 : "Vehicle not found in rented list.";
     }
 
-
-    // ✅ Rent a vehicle and add to linked list
     @PostMapping("/rent/{id}")
     public String rentVehicle(@PathVariable String id) {
         vehicleService.rentVehicle(id);
@@ -84,18 +96,14 @@ public class VehicleController {
         return result ? "Vehicle availability updated." : "Vehicle not found.";
     }
 
-
-    // ✅ Print all rented vehicles (debug/log)
     @GetMapping("/rented/print")
     public String printRentedVehicles() {
         vehicleService.printAllRentedVehicles();
         return "Printed all rented vehicles in server console.";
     }
 
-    // ✅ Return all rented vehicles as JSON
     @GetMapping("/rented")
     public List<Vehicle> getAllRentedVehicles() {
         return vehicleService.getRentedVehicleList();
     }
-
 }
