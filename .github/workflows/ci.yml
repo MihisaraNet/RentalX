@@ -2,9 +2,9 @@ name: RentalX CI/CD Pipeline
 
 on:
   push:
-    branches: [ "main", "master", "develop" ]
+    branches: [ "main", "master", "develop", "dev" ]
   pull_request:
-    branches: [ "main", "master" ]
+    branches: [ "main", "master", "dev" ]
 
 jobs:
   build-and-test:
@@ -13,6 +13,9 @@ jobs:
     steps:
     - name: Check out repository
       uses: actions/checkout@v4
+
+    - name: Make mvnw executable
+      run: chmod +x ./mvnw
 
     - name: Set up JDK 21
       uses: actions/setup-java@v4
