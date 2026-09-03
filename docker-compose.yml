@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  # ----------------------------------------------------------------------------
+  # RentalX Spring Boot Application Service
+  # ----------------------------------------------------------------------------
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rentalx-app
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/rentalx_db
+      - SPRING_DATASOURCE_USERNAME=rentalx_user
+      - SPRING_DATASOURCE_PASSWORD=rentalx_secure_pass
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - RENTALX_JWT_SECRET=9a6747f3b6c2e8a5b23d6a9e1c7f4b8a2e5d9c1b3f7a8e2d4c6b8a1e3f5d7c9a
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - rentalx_uploads:/app/src/main/resources/static/uploads
+    networks:
+      - rentalx-net
+
+  # ----------------------------------------------------------------------------
+  # PostgreSQL Production Database Service
+  # ----------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: rentalx-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: rentalx_db
+      POSTGRES_USER: rentalx_user
+      POSTGRES_PASSWORD: rentalx_secure_pass
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - rentalx-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rentalx_user -d rentalx_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  rentalx-net:
+    driver: bridge
+
+volumes:
+  pgdata:
+  rentalx_uploads:
