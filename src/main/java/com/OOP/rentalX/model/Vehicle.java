@@ -1,17 +1,39 @@
 package com.OOP.rentalX.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "vehicles")
 public class Vehicle {
+
+    @Id
+    @Column(name = "vehicle_id", length = 50, nullable = false, unique = true)
     private String vehicleId;
+
+    @Column(nullable = false, length = 100)
     private String model;
+
+    @Column(nullable = false, length = 50)
     private String type;
+
+    @Column(name = "driver_id", length = 50)
     private String driverId;
-    private boolean available;
+
+    @Column(nullable = false)
+    private boolean available = true;
+
+    @Column(name = "rent_price", nullable = false)
     private double rentPrice;
+
+    @Column(name = "image_path", length = 255)
     private String imagePath;
 
     public Vehicle() {}
 
-    public Vehicle(String vehicleId, String model, String type, boolean available, double rentPrice,String imagePath, String driverId) {
+    public Vehicle(String vehicleId, String model, String type, boolean available, double rentPrice, String imagePath, String driverId) {
         this.vehicleId = vehicleId;
         this.model = model;
         this.type = type;

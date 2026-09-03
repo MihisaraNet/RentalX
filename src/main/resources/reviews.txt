@@ -1,3 +1,7 @@
 2,2,2,fasdfsadfsdafasd,2
 R1747717525834,user,4,5,3
 R1747718210642,user,4,dgafljgj,5
+R10001,user,V002,Great car for family trips. Highly recommend!,5
+R10002,user,V003,Smooth ride but fuel efficiency could be better.,4
+R10003,user,V005,Absolutely loved the features of this vehicle!,5
+R10004,0001,V004,Had an amazing experience renting this vehicle. Very clean and well maintained!,5

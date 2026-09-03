@@ -1,10 +1,28 @@
 package com.OOP.rentalX.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "reviews")
 public class Review {
+
+    @Id
+    @Column(name = "review_id", length = 50, nullable = false, unique = true)
     private String reviewId;
+
+    @Column(name = "user_id", length = 50, nullable = false)
     private String userId;
+
+    @Column(name = "vehicle_id", length = 50, nullable = false)
     private String vehicleId;
+
+    @Column(name = "review_text", length = 1000)
     private String reviewText;
+
+    @Column(nullable = false)
     private int rating;
 
     public Review() {

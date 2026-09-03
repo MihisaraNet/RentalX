@@ -1,11 +1,31 @@
 package com.OOP.rentalX.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "drivers")
 public class Driver {
+
+    @Id
+    @Column(name = "driver_id", length = 50, nullable = false, unique = true)
     private String driverId;
+
+    @Column(nullable = false, length = 100)
     private String name;
+
+    @Column(name = "license_number", length = 50)
     private String licenseNumber;
+
+    @Column(length = 20)
     private String phone;
+
+    @Column(nullable = false, length = 100)
     private String email;
+
+    @Column(nullable = false, length = 255)
     private String password;
 
     public Driver() {}
@@ -18,7 +38,6 @@ public class Driver {
         this.email = email;
         this.password = password;
     }
-
 
     // Getters and Setters
     public String getDriverId() { return driverId; }

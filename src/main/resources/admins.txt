@@ -1,4 +1,3 @@
-A001,John Doe,john@example.com,pass123
-A002,Jane Smith,jane@example.com,password
-A003,Michael Brown,michael@rentalx.com,admin123
+A001,isula,isula@mail.com,pass123
+A002,mihisara,mihisara@mail.com,password
 admin,admin,admin@mail.com,admin

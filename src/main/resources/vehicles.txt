@@ -1,1 +1,11 @@
 V001,BMW,HatchBack,false,7000.0,/uploads/abafd207-c86a-4a3b-9d1a-e83b93b3d6c5_images.jpeg,4
+V002,Toyota,Sedan,true,5000.0,/uploads/toyota.png,3
+V003,Honda,SUV,true,6500.0,/uploads/honda.png,4
+V004,Ford,Truck,true,8000.0,/uploads/ford.png,5
+V005,Tesla,Sedan,true,10000.0,/uploads/tesla.png,3
+V006,Mercedes,SUV,false,12000.0,/uploads/mercedes.png,4
+V007,Audi,Sedan,true,9000.0,/uploads/audi.png,5
+V008,Chevrolet,Truck,true,7500.0,/uploads/chevrolet.png,3
+V009,Nissan,HatchBack,true,4000.0,/uploads/nissan.png,4
+V010,Hyundai,SUV,true,6000.0,/uploads/hyundai.png,5
+V011,Kia,Sedan,true,4500.0,/uploads/kia.png,3
