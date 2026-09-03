@@ -1,59 +1,74 @@
 const DRIVER_API = '/driver';
 
-document.getElementById('addDriverForm').addEventListener('submit', function (e) {
-    e.preventDefault();
+function getAuthHeaders() {
+    const token = localStorage.getItem('rentalx_token');
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+    return headers;
+}
 
-    const driver = {
-        driverId: document.getElementById('driverId').value,
-        name: document.getElementById('name').value,
-        licenseNumber: document.getElementById('licenseNumber').value,
-        phone: document.getElementById('phone').value,
-        email: document.getElementById('email').value,
-        password: document.getElementById('password').value
-    };
+const addDriverForm = document.getElementById('addDriverForm');
+if (addDriverForm) {
+    addDriverForm.addEventListener('submit', function (e) {
+        e.preventDefault();
 
-    fetch(`${DRIVER_API}/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(driver)
-    })
+        const driver = {
+            driverId: document.getElementById('driverId').value.trim(),
+            name: document.getElementById('name').value.trim(),
+            licenseNumber: document.getElementById('licenseNumber').value.trim(),
+            phone: document.getElementById('phone').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            password: document.getElementById('password').value
+        };
+
+        fetch(`${DRIVER_API}/register`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(driver)
+        })
         .then(res => {
             if (!res.ok) throw new Error('Registration failed');
-            alert('Driver added!');
-            document.getElementById('addDriverForm').reset();
+            alert('Driver added successfully!');
+            addDriverForm.reset();
             fetchDrivers();
         })
         .catch(err => {
             console.error(err);
-            alert("Error adding driver.");
+            alert("Error adding driver: " + err.message);
         });
-});
+    });
+}
 
 function fetchDrivers() {
-    fetch(`${DRIVER_API}/all`)
+    fetch(`${DRIVER_API}/all`, { headers: getAuthHeaders() })
         .then(res => res.json())
         .then(data => {
             const tableBody = document.getElementById('driverTableBody');
+            if (!tableBody) return;
             tableBody.innerHTML = '';
+
+            if (!Array.isArray(data) || data.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:15px;">No drivers registered yet.</td></tr>';
+                return;
+            }
 
             data.forEach(d => {
                 const row = document.createElement('tr');
-
                 row.innerHTML = `
-                    <td>${d.driverId}</td>
+                    <td><strong>${d.driverId}</strong></td>
                     <td>${d.name}</td>
-                    <td>${d.licenseNumber}</td>
-                    <td>${d.phone}</td>
+                    <td>${d.licenseNumber || 'N/A'}</td>
+                    <td>${d.phone || 'N/A'}</td>
                     <td>${d.email}</td>
-                    <td><button onclick="deleteDriver('${d.driverId}')">Delete</button></td>
+                    <td><button onclick="deleteDriver('${d.driverId}')" style="background:#fee2e2; color:#dc2626; border:1px solid #fca5a5; padding:4px 8px; border-radius:4px; cursor:pointer;">Delete</button></td>
                 `;
-
                 tableBody.appendChild(row);
             });
         })
         .catch(err => {
             console.error("Error fetching drivers:", err);
-            alert("Could not load driver list.");
         });
 }
 
@@ -61,17 +76,18 @@ function deleteDriver(driverId) {
     if (!confirm(`Are you sure you want to delete driver ID: ${driverId}?`)) return;
 
     fetch(`${DRIVER_API}/delete/${driverId}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: getAuthHeaders()
     })
-        .then(res => {
-            if (!res.ok) throw new Error('Delete failed');
-            alert('Driver deleted!');
-            fetchDrivers();
-        })
-        .catch(err => {
-            console.error(err);
-            alert("Error deleting driver.");
-        });
+    .then(res => {
+        if (!res.ok) throw new Error('Delete failed');
+        alert('Driver deleted!');
+        fetchDrivers();
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Error deleting driver.");
+    });
 }
 
 window.onload = fetchDrivers;

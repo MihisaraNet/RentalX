@@ -1,87 +1,99 @@
 const BASE_URL = '/vehicles';
 
-document.getElementById('addVehicleForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-    const form = document.getElementById('addVehicleForm');
-    const formData = new FormData(form);
+function getAuthHeaders() {
+    const token = localStorage.getItem('rentalx_token');
+    const headers = {};
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+    return headers;
+}
 
-    // Convert checkbox to boolean
-    formData.set("available", form.elements['available'].checked);
+const addForm = document.getElementById('addVehicleForm');
+if (addForm) {
+    addForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const formData = new FormData(addForm);
+        formData.set("available", addForm.elements['available'] ? addForm.elements['available'].checked : true);
 
-    fetch(`${BASE_URL}/add`, {
-        method: 'POST',
-        body: formData
-    })
-        .then(response => {
-            if (!response.ok) {
-                return response.text().then(msg => {
-                    throw new Error(msg); // Trigger catch with custom error
-                });
-            }
-            return response.text(); // Optional: Success message
+        fetch(`${BASE_URL}/add`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: formData
         })
-        .then(() => {
+        .then(async response => {
+            const text = await response.text();
+            if (!response.ok) {
+                throw new Error(text || "Failed to add vehicle.");
+            }
             alert("Vehicle added successfully!");
-            form.reset();
+            addForm.reset();
             fetchVehicles(false);
         })
         .catch(err => {
             console.error("Add failed:", err.message);
             alert(err.message || "Failed to add vehicle.");
         });
-});
+    });
+}
 
+function fetchVehicles(sortByPrice = false) {
+    fetch(`${BASE_URL}/all?sortByPrice=${sortByPrice}`, {
+        headers: getAuthHeaders()
+    })
+    .then(res => res.json())
+    .then(data => {
+        const tbody = document.getElementById('vehicleTableBody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
 
-function fetchVehicles(sort) {
-    fetch(`${BASE_URL}/all?sortByPrice=${sort}`)
-        .then(res => res.json())
-        .then(data => {
-            const tbody = document.getElementById('vehicleTableBody');
-            tbody.innerHTML = '';
+        if (!Array.isArray(data) || data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 20px;">No vehicles found.</td></tr>';
+            return;
+        }
 
-            data.forEach(v => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-        <td>${v.vehicleId}</td>
-        <td>${v.model}</td>
-        <td>${v.type}</td>
-        <td style="color: ${v.available ? 'green' : 'red'};">
-            ${v.available ? 'Available' : 'Rented'}
-        </td>
-        <td>Rs.${v.rentPrice}</td>
-        <td><img src="${v.imagePath}" alt="Vehicle Image"></td>
-        <td>${v.driverId}</td>
-<td>
-  <button class="action-btn btn-toggle" onclick="toggleAvailability('${v.vehicleId}')">
-    ${v.available ? 'Mark Rented' : 'Mark Available'}
-  </button>
-</td>
+        data.forEach(v => {
+            const row = document.createElement('tr');
+            const defaultImg = "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=400";
+            const imgSrc = v.imagePath && v.imagePath.trim() !== '' ? v.imagePath : defaultImg;
 
-<td>
-  <button class="action-btn btn-delete" onclick="deleteVehicleById('${v.vehicleId}')">
-    Delete
-  </button>
-</td>
-
-
-    `;
-                tbody.appendChild(row);
-            });
-
-        })
-        .catch(err => {
-            console.error(err);
-            alert("Failed to load vehicles.");
+            row.innerHTML = `
+                <td><strong>${v.vehicleId}</strong></td>
+                <td>${v.model}</td>
+                <td><span class="badge" style="background:#e0e7ff; color:#3730a3; padding:2px 6px; border-radius:4px;">${v.type}</span></td>
+                <td>
+                    <span style="color: ${v.available ? '#10b981' : '#ef4444'}; font-weight: bold;">
+                        ${v.available ? '● Available' : '● Rented'}
+                    </span>
+                </td>
+                <td><strong>$${v.rentPrice}</strong>/day</td>
+                <td><img src="${imgSrc}" alt="${v.model}" style="width: 70px; height: 45px; object-fit: cover; border-radius: 6px;" onerror="this.src='${defaultImg}'"></td>
+                <td>${v.driverId || 'N/A'}</td>
+                <td>
+                    <button class="action-btn btn-toggle" onclick="toggleAvailability('${v.vehicleId}')" style="margin-right: 5px; cursor: pointer;">
+                        ${v.available ? 'Mark Rented' : 'Mark Available'}
+                    </button>
+                    <button class="action-btn btn-delete" onclick="deleteVehicleById('${v.vehicleId}')" style="cursor: pointer; background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5;">
+                        Delete
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(row);
         });
+    })
+    .catch(err => {
+        console.error(err);
+    });
 }
 
 function deleteVehicleById(id) {
     if (!confirm(`Are you sure you want to delete vehicle ID: ${id}?`)) return;
 
     fetch(`${BASE_URL}/delete/${id}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: getAuthHeaders()
     }).then(() => {
-        alert('Vehicle deleted!');
+        alert('Vehicle deleted successfully!');
         fetchVehicles(false);
     }).catch(err => {
         console.error(err);
@@ -91,62 +103,33 @@ function deleteVehicleById(id) {
 
 function toggleAvailability(vehicleId) {
     fetch(`${BASE_URL}/toggleAvailability/${vehicleId}`, {
-        method: 'PUT'
+        method: 'PUT',
+        headers: getAuthHeaders()
     })
-        .then(res => res.text())
-        .then(msg => {
-            alert(msg);
-            fetchVehicles(false);
-        })
-        .catch(err => {
-            console.error(err);
-            alert("Error toggling availability.");
-        });
+    .then(res => res.text())
+    .then(msg => {
+        alert(msg);
+        fetchVehicles(false);
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Error toggling availability.");
+    });
 }
-
 
 function rentVehicle(vehicleId) {
     fetch(`/vehicles/rent/${vehicleId}`, {
-        method: 'POST'
+        method: 'POST',
+        headers: getAuthHeaders()
     })
-        .then(res => res.text())
-        .then(msg => {
-            alert(msg);
-            fetchVehicles(false); // Refresh list
-        })
-        .catch(err => console.error("Error renting:", err));
+    .then(res => res.text())
+    .then(msg => {
+        alert(msg);
+        fetchVehicles(false);
+    })
+    .catch(err => console.error("Error renting:", err));
 }
 
-
-// ✅ Keep this logic if you later add update UI
-document.getElementById('updateVehicleForm')?.addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    const vehicleId = document.getElementById('updateVehicleId').value;
-    const updatedVehicle = {
-        vehicleId: vehicleId,
-        model: document.getElementById('updateModel').value,
-        type: document.getElementById('updateType').value,
-        available: document.getElementById('updateAvailable').checked,
-        rentPrice: parseFloat(document.getElementById('updateRentPrice').value),
-        imagePath: "" // placeholder
-    };
-
-    fetch(`${BASE_URL}/update/${vehicleId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedVehicle)
-    }).then(res => {
-        if (res.ok) {
-            alert("Vehicle updated successfully!");
-            fetchVehicles(false);
-        } else {
-            alert("Update failed.");
-        }
-    }).catch(err => {
-        console.error(err);
-        alert("Error updating vehicle.");
-    });
-});
-
-window.onload = () => fetchVehicles(false);
+window.onload = () => {
+    fetchVehicles(false);
+};
